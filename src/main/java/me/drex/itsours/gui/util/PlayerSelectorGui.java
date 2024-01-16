@@ -25,7 +25,7 @@ public class PlayerSelectorGui extends StringInputGui {
             new GuiElementBuilder(Items.PLAYER_HEAD)
                 .setName(Text.literal(input))
                 // Name must be non-empty, so we default to "DrexHD"
-                .setSkullOwner(new GameProfile(UUID.randomUUID(), StringUtils.isBlank(input) ? "DrexHD" : input), null)
+                .setSkullOwner(new GameProfile(UUID.randomUUID(), StringUtils.isBlank(input) ? "Howie0715" : input), null)
                 .setCallback(() -> {
                     if (!StringUtils.isBlank(input)) {
                         consumer.accept(input);

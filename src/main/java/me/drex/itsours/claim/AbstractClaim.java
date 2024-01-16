@@ -2,6 +2,7 @@ package me.drex.itsours.claim;
 
 import me.drex.itsours.ItsOurs;
 import me.drex.itsours.claim.permission.Permission;
+import me.drex.itsours.claim.permission.PermissionManager;
 import me.drex.itsours.claim.permission.context.*;
 import me.drex.itsours.claim.permission.holder.PermissionData;
 import me.drex.itsours.claim.permission.node.ChildNode;
@@ -143,7 +144,13 @@ public abstract class AbstractClaim {
     }
 
     public void onEnter(@Nullable AbstractClaim previousClaim, ServerPlayerEntity player) {
-        boolean hasPermission = ItsOurs.checkPermission(player.getCommandSource(), "itsours.fly", 2) && player.getWorld().getRegistryKey().equals(World.OVERWORLD);
+        boolean hasPermission = ItsOurs.checkPermission(
+                player.getCommandSource(), "itsours.fly", 2)
+                && ClaimList.getClaimAt(player).isPresent()
+                && ClaimList.getClaimAt(player).get().hasPermission(null, PermissionManager.MISC)
+                && (player.getWorld().getRegistryKey().equals(World.OVERWORLD)
+                || player.getWorld().getRegistryKey().equals(World.END)
+                || player.getWorld().getRegistryKey().equals(World.NETHER));
         boolean cachedFlying = hasPermission && player.getAbilities().flying;
         // Update abilities for respective gamemode
         player.interactionManager.getGameMode().setAbilities(player.getAbilities());

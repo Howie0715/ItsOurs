@@ -4,6 +4,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.drex.itsours.ItsOurs;
 import me.drex.itsours.claim.ClaimList;
+import me.drex.itsours.claim.permission.PermissionManager;
 import me.drex.itsours.user.PlayerData;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -25,7 +26,11 @@ public class FlyCommand extends ToggleCommand {
     @Override
     protected void afterToggle(ServerCommandSource src, boolean newValue) throws CommandSyntaxException {
         ServerPlayerEntity player = src.getPlayer();
-        if (ClaimList.getClaimAt(player).isPresent() && player.getWorld().getRegistryKey().equals(World.OVERWORLD)) {
+        if (ClaimList.getClaimAt(player).isPresent()
+            && ClaimList.getClaimAt(player).get().hasPermission(null, PermissionManager.MISC)
+            && (player.getWorld().getRegistryKey().equals(World.OVERWORLD)
+            || player.getWorld().getRegistryKey().equals(World.END)
+            || player.getWorld().getRegistryKey().equals(World.NETHER))) {
             player.interactionManager.getGameMode().setAbilities(player.getAbilities());
             if (newValue) {
                 player.getAbilities().allowFlying = true;

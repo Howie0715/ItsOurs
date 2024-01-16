@@ -93,6 +93,14 @@ public class PermissionManager {
         .icon(Items.DIAMOND_SWORD)
         .then(DAMAGE_ENTITY_NODES)
         .build();
+    public static final AbstractChildNode ITEM_PICK = literal("item_pick")
+            .description("permission.item_pick")
+            .icon(Items.APPLE)
+            .build();
+    public static final AbstractChildNode XP_ABSORB = literal("xp_absorb")
+            .description("permission.xp_absorb")
+            .icon(Items.EXPERIENCE_BOTTLE)
+            .build();
     public static final AbstractChildNode MISC = literal("misc")
         .description("permission.misc")
         .icon(Items.ELYTRA)
@@ -145,6 +153,8 @@ public class PermissionManager {
         registerPermission(USE_ITEM);
         registerPermission(DAMAGE_ENTITY);
         registerPermission(INTERACT_ENTITY);
+        registerPermission(ITEM_PICK);
+        registerPermission(XP_ABSORB);
         registerPermission(MODIFY);
         registerPermission(MISC);
         // Settings

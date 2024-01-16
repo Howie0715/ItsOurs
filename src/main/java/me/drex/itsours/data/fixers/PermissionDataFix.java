@@ -60,6 +60,8 @@ public class PermissionDataFix extends DataFix {
                         claim.createString("place"), claim.createBoolean(true),
                         claim.createString("damage_entity"), claim.createBoolean(true),
                         claim.createString("interact_block"), claim.createBoolean(true),
+                        claim.createString("item_pick"), claim.createBoolean(true),
+                        claim.createString("xp_absorb"), claim.createBoolean(true),
                         claim.createString("misc"), claim.createBoolean(true)
                     ))
                 )),
@@ -74,8 +76,10 @@ public class PermissionDataFix extends DataFix {
                         claim.createString("place"), claim.createBoolean(true),
                         claim.createString("damage_entity"), claim.createBoolean(true),
                         claim.createString("interact_block"), claim.createBoolean(true),
-                        claim.createString("misc"), claim.createBoolean(true),
-                        claim.createString("modify"), claim.createBoolean(true)
+                        claim.createString("item_pick"), claim.createBoolean(true),
+                        claim.createString("xp_absorb"), claim.createBoolean(true),
+                        claim.createString("misc"), claim.createBoolean(true)
+//                        claim.createString("modify"), claim.createBoolean(true)
                     ))
                 ))
             )));

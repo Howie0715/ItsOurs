@@ -13,8 +13,10 @@
     "FarmlandBlockMixin",
     "FluidMixin",
     "FrostWalkerEnchantmentMixin",
+    "ItemPickMixin",
     "LecternScreenHandlerMixin",
     "PickUpBlockGoalMixin",
+    "PiglinSpawnMixin",
     "PistonHandlerMixin",
     "PlaceBlockGoalMixin",
     "PlayerEntityMixin",
@@ -28,6 +30,7 @@
     "SpawnRestrictionMixin",
     "TurtleEggBlockMixin",
     "WitherEntityMixin",
+    "XpAbsorbMixin",
     "tracking.ChunkDataSenderMixin",
     "tracking.ServerPlayerEntityMixin",
     "tracking.ServerPlayNetworkHandlerMixin"

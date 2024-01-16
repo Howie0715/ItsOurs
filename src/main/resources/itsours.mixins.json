@@ -22,6 +22,8 @@
     "PlayerEntityMixin",
     "PlayerManagerMixin",
     "ProjectileEntityMixin",
+    "RaidEntityMixin",
+    "RaidMixin",
     "ScaffoldingBlockMixin",
     "SculkCatalystBlockEntityMixin",
     "SculkSpreadManagerCursorMixin",

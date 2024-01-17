@@ -69,7 +69,7 @@ public abstract class ServerPlayerInteractionManagerMixin {
         if ((blockState.getBlock().toString().equals("Block{universal_shops:trade_block}")
                 && (claim.isEmpty()
                 || !claim.get().getMainClaim().getName().equals("City")))) {
-            player.sendMessage(Text.of(" 請在City內交易 "), true);
+            player.sendMessage(Text.of("請在 City 內交易"), true);
             return ActionResult.FAIL;
         }
         if (claim.isEmpty()

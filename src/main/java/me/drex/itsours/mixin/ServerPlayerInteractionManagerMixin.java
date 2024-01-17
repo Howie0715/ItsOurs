@@ -67,8 +67,9 @@ public abstract class ServerPlayerInteractionManagerMixin {
     private ActionResult itsours$canInteractBlock(BlockState blockState, World world, PlayerEntity playerEntity, Hand hand, BlockHitResult hit, Operation<ActionResult> original) {
         Optional<AbstractClaim> claim = ClaimList.getClaimAt(world, hit.getBlockPos());
         if ((blockState.getBlock().toString().equals("Block{universal_shops:trade_block}")
-                && !claim.get().getMainClaim().getName().equals("City"))) {
-            player.sendMessage(Text.of("請在City內交易"), true);
+                && (claim.isEmpty()
+                || !claim.get().getMainClaim().getName().equals("City")))) {
+            player.sendMessage(Text.of(" 請在City內交易 "), true);
             return ActionResult.FAIL;
         }
         if (claim.isEmpty()

@@ -2,17 +2,25 @@ package me.drex.itsours.mixin;
 
 import com.mojang.authlib.GameProfile;
 import me.drex.itsours.claim.AbstractClaim;
+import me.drex.itsours.claim.ClaimList;
 import me.drex.itsours.data.DataManager;
 import me.drex.itsours.user.ClaimSelectingPlayer;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.util.Optional;
 
 @Mixin(ServerPlayerEntity.class)
 public abstract class ServerPlayerEntityMixin extends PlayerEntity implements ClaimSelectingPlayer {
@@ -31,6 +39,8 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Cl
 
     @Shadow
     public abstract void sendMessage(Text message);
+
+    @Shadow @Final public MinecraftServer server;
 
     @Override
     public boolean arePositionsSet() {
@@ -64,4 +74,14 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Cl
         firstPos = pos;
     }
 
+    @Inject(
+            method = "onSpawn",
+            at = @At("HEAD")
+    )
+    public void itsours$onPlayerConnect(CallbackInfo ci) {
+        for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()){
+            Optional<AbstractClaim> optional = ClaimList.getClaimAt(player);
+            optional.ifPresent(claim -> claim.onEnter(null, player, false));
+        }
+    }
 }

@@ -33,7 +33,7 @@ public abstract class PlayerManagerMixin {
     )
     public void itsours$onPlayerConnect(ClientConnection connection, ServerPlayerEntity player, ConnectedClientData clientData, CallbackInfo ci) {
         Optional<AbstractClaim> optional = ClaimList.getClaimAt(player);
-        optional.ifPresent(claim -> claim.onEnter(null, player));
+        optional.ifPresent(claim -> claim.onEnter(null, player, true));
     }
 
     @Inject(method = "saveAllPlayerData", at = @At("HEAD"))

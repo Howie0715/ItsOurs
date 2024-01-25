@@ -143,7 +143,7 @@ public abstract class AbstractClaim {
         this.subzones.remove(subzone);
     }
 
-    public void onEnter(@Nullable AbstractClaim previousClaim, ServerPlayerEntity player) {
+    public void onEnter(@Nullable AbstractClaim previousClaim, ServerPlayerEntity player, boolean showTip) {
         boolean hasPermission = ItsOurs.checkPermission(
                 player.getCommandSource(), "itsours.fly", 2)
                 && ClaimList.getClaimAt(player).isPresent()
@@ -163,8 +163,9 @@ public abstract class AbstractClaim {
             player.getAbilities().flying = cachedFlying;
         }
         player.sendAbilitiesUpdate();
-
-        player.sendMessage(messages.enter().map(Text::literal).orElse(localized("text.itsours.claim.enter", placeholders(player.server))), true);
+        if (showTip){
+            player.sendMessage(messages.enter().map(Text::literal).orElse(localized("text.itsours.claim.enter", placeholders(player.server))), true);
+        }
     }
 
     public void onLeave(@Nullable AbstractClaim nextClaim, ServerPlayerEntity player) {

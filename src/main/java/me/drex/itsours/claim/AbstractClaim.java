@@ -150,7 +150,8 @@ public abstract class AbstractClaim {
                 && ClaimList.getClaimAt(player).get().hasPermission(null, PermissionManager.MISC)
                 && (player.getWorld().getRegistryKey().equals(World.OVERWORLD)
                 || player.getWorld().getRegistryKey().equals(World.END)
-                || player.getWorld().getRegistryKey().equals(World.NETHER));
+                || player.getWorld().getRegistryKey().equals(World.NETHER))
+                || player.hasPermissionLevel(4);
         boolean cachedFlying = hasPermission && player.getAbilities().flying;
         // Update abilities for respective gamemode
         player.interactionManager.getGameMode().setAbilities(player.getAbilities());

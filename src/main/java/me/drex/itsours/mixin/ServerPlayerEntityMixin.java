@@ -78,7 +78,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Cl
             method = "onSpawn",
             at = @At("HEAD")
     )
-    public void itsours$onPlayerConnect(CallbackInfo ci) {
+    public void itsours$onSpawn(CallbackInfo ci) {
         for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()){
             Optional<AbstractClaim> optional = ClaimList.getClaimAt(player);
             optional.ifPresent(claim -> claim.onEnter(null, player, false));

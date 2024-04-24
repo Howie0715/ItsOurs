@@ -18,6 +18,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.ItemActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -41,11 +42,11 @@ public abstract class ServerPlayerInteractionManagerMixin {
     protected ServerWorld world;
 
     @ModifyExpressionValue(
-            method = "tryBreakBlock",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/server/network/ServerPlayerEntity;isBlockBreakingRestricted(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/world/GameMode;)Z"
-            )
+        method = "tryBreakBlock",
+        at = @At(
+            value = "INVOKE",
+            target = "Lnet/minecraft/server/network/ServerPlayerEntity;isBlockBreakingRestricted(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/world/GameMode;)Z"
+        )
     )
     private boolean itsours$canBreakBlock(boolean original, BlockPos pos) {
         Optional<AbstractClaim> claim = ClaimList.getClaimAt(world, pos);
@@ -58,14 +59,34 @@ public abstract class ServerPlayerInteractionManagerMixin {
     }
 
     @WrapOperation(
-            method = "interactBlock",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/block/BlockState;onUse(Lnet/minecraft/world/World;Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/Hand;Lnet/minecraft/util/hit/BlockHitResult;)Lnet/minecraft/util/ActionResult;"
-            )
+        method = "interactBlock",
+        at = @At(
+            value = "INVOKE",
+            target = "Lnet/minecraft/block/BlockState;onUseWithItem(Lnet/minecraft/item/ItemStack;Lnet/minecraft/world/World;Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/Hand;Lnet/minecraft/util/hit/BlockHitResult;)Lnet/minecraft/util/ItemActionResult;"
+        )
     )
-    private ActionResult itsours$canInteractBlock(BlockState blockState, World world, PlayerEntity playerEntity, Hand hand, BlockHitResult hit, Operation<ActionResult> original) {
+    private ItemActionResult itsours$canInteractBlockItemSpecific(BlockState blockState, ItemStack itemStack, World world, PlayerEntity playerEntity, Hand hand, BlockHitResult hit, Operation<ItemActionResult> original) {
         Optional<AbstractClaim> claim = ClaimList.getClaimAt(world, hit.getBlockPos());
+        if (claim.isEmpty() || !PermissionManager.INTERACT_BLOCK_PREDICATE.test(blockState.getBlock()))
+            return original.call(blockState, itemStack, world, playerEntity, hand, hit);
+        if (!claim.get().hasPermission(playerEntity.getUuid(), PermissionManager.INTERACT_BLOCK, Node.registry(Registries.BLOCK, blockState.getBlock()))) {
+            player.sendMessage(localized("text.itsours.action.disallowed.interact_block"), true);
+            return ItemActionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        }
+        return original.call(blockState, itemStack, world, playerEntity, hand, hit);
+    }
+
+    @WrapOperation(
+        method = "interactBlock",
+        at = @At(
+            value = "INVOKE",
+            target = "Lnet/minecraft/block/BlockState;onUse(Lnet/minecraft/world/World;Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/hit/BlockHitResult;)Lnet/minecraft/util/ActionResult;"
+        )
+    )
+    private ActionResult itsours$canInteractBlockDefault(BlockState blockState, World world, PlayerEntity playerEntity, BlockHitResult hit, Operation<ActionResult> original) {
+        Optional<AbstractClaim> claim = ClaimList.getClaimAt(world, hit.getBlockPos());
+        if (claim.isEmpty() || !PermissionManager.INTERACT_BLOCK_PREDICATE.test(blockState.getBlock()))
+            return original.call(blockState, world, playerEntity, hit);
         if ((blockState.getBlock().toString().equals("Block{universal_shops:trade_block}")
                 && (claim.isEmpty()
                 || !claim.get().getMainClaim().getName().equals("City")))) {
@@ -76,20 +97,20 @@ public abstract class ServerPlayerInteractionManagerMixin {
                 || !PermissionManager.INTERACT_BLOCK_PREDICATE.test(blockState.getBlock())
                 || blockState.getBlock().toString().equals("Block{universal_shops:trade_block}")
                 || blockState.getBlock().toString().equals("Block{universal_shops:admin_trade_block}"))
-            return original.call(blockState, world, playerEntity, hand, hit);
+            return original.call(blockState, world, playerEntity, hit);
         if (!claim.get().hasPermission(playerEntity.getUuid(), PermissionManager.INTERACT_BLOCK, Node.registry(Registries.BLOCK, blockState.getBlock()))) {
             player.sendMessage(localized("text.itsours.action.disallowed.interact_block"), true);
             return ActionResult.FAIL;
         }
-        return original.call(blockState, world, playerEntity, hand, hit);
+        return original.call(blockState, world, playerEntity, hit);
     }
 
     @WrapOperation(
-            method = "processBlockBreakingAction",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/block/BlockState;onBlockBreakStart(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/entity/player/PlayerEntity;)V"
-            )
+        method = "processBlockBreakingAction",
+        at = @At(
+            value = "INVOKE",
+            target = "Lnet/minecraft/block/BlockState;onBlockBreakStart(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/entity/player/PlayerEntity;)V"
+        )
     )
     private void itsours$canInteractBlock2(BlockState blockState, World world, BlockPos pos, PlayerEntity playerEntity, Operation<Void> original) {
         Optional<AbstractClaim> claim = ClaimList.getClaimAt(world, pos);
@@ -105,11 +126,11 @@ public abstract class ServerPlayerInteractionManagerMixin {
     }
 
     @WrapOperation(
-            method = "interactBlock",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/item/ItemStack;useOnBlock(Lnet/minecraft/item/ItemUsageContext;)Lnet/minecraft/util/ActionResult;"
-            )
+        method = "interactBlock",
+        at = @At(
+            value = "INVOKE",
+            target = "Lnet/minecraft/item/ItemStack;useOnBlock(Lnet/minecraft/item/ItemUsageContext;)Lnet/minecraft/util/ActionResult;"
+        )
     )
     private ActionResult itsours$canUseOnBlock(ItemStack itemStack, ItemUsageContext context, Operation<ActionResult> original) {
         Optional<AbstractClaim> claim = ClaimList.getClaimAt(context);

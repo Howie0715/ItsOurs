@@ -46,8 +46,6 @@
   "text.itsours.permission.use_item.description": "Right click items (eg. eating)",
   "text.itsours.permission.damage_entity.description": "Hurting entities (eg. hitting a pig)",
   "text.itsours.permission.interact_entity.description": "Right clicking entities (eg. trading with villager)",
-  "text.itsours.permission.item_pick.description": "Pick up item",
-  "text.itsours.permission.xp_absorb.description": "Absorb xp orb",
   "text.itsours.permission.misc.description": "Miscellaneous permission (eg. elytra gliding)",
   "text.itsours.permission.modify.description": "Claim permission (eg. expanding claim)",
   "text.itsours.setting.pvp.description": "Player vs Player",

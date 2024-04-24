@@ -14,6 +14,7 @@ import me.drex.itsours.claim.permission.util.Misc;
 import me.drex.itsours.claim.permission.util.Modify;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.*;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
@@ -29,6 +30,7 @@ import net.minecraft.world.World;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.reflect.Method;
 import java.util.*;
 import java.util.function.Predicate;
 
@@ -42,7 +44,7 @@ public class PermissionManager {
     public static final RootNode PERMISSION = new RootNode("permission");
     public static final RootNode COMBINED = new RootNode("combined");
 
-    public static final Predicate<Item> USE_ITEM_PREDICATE = item -> overrides(item.getClass(), Item.class, DEV_ENV ? "use" : "method_7836", World.class, PlayerEntity.class, Hand.class) || item.isFood();
+    public static final Predicate<Item> USE_ITEM_PREDICATE = item -> overrides(item.getClass(), Item.class, DEV_ENV ? "use" : "method_7836", World.class, PlayerEntity.class, Hand.class) || item.getComponents().contains(DataComponentTypes.FOOD);
     public static final List<ChildNode> USE_ITEM_NODES = getNodes(Registries.ITEM, USE_ITEM_PREDICATE);
     public static final AbstractChildNode USE_ITEM = literal("use_item")
         .description("permission.use_item")
@@ -57,11 +59,12 @@ public class PermissionManager {
         .then(ITEM_BLOCK_NODES)
         .build();
     public static final Predicate<Block> INTERACT_BLOCK_PREDICATE = block -> {
-        boolean onUseOverride = overrides(block.getClass(), Block.class, DEV_ENV ? "onUse" : "method_9534", BlockState.class, World.class, BlockPos.class, PlayerEntity.class, Hand.class, BlockHitResult.class);
+        boolean onUseOverride = overrides(block.getClass(), Block.class, DEV_ENV ? "onUseWithItem" : "method_55765", ItemStack.class, BlockState.class, World.class, BlockPos.class, PlayerEntity.class, Hand.class, BlockHitResult.class);
+        boolean onUseOverride2 = overrides(block.getClass(), Block.class, DEV_ENV ? "onUse" : "method_55766", BlockState.class, World.class, BlockPos.class, PlayerEntity.class, BlockHitResult.class);
         // Instant-mine interactions (dragon egg, note block and redstone ore)
         boolean onBlockBreakStartOverride = overrides(block.getClass(), Block.class, DEV_ENV ? "onBlockBreakStart" : "method_9606", BlockState.class, World.class, BlockPos.class, PlayerEntity.class);
         return !(block instanceof StairsBlock) &&
-            (onUseOverride || onBlockBreakStartOverride ||
+            (onUseOverride || onUseOverride2 || onBlockBreakStartOverride ||
                 block instanceof ButtonBlock || block instanceof AbstractPressurePlateBlock);
     };
     public static final List<ChildNode> INTERACT_BLOCK_NODES = getNodes(Registries.BLOCK, INTERACT_BLOCK_PREDICATE);
@@ -238,9 +241,41 @@ public class PermissionManager {
 
     private static boolean overrides(Class<?> clazz1, Class<?> clazz2, String methodName, Class<?>... classes) {
         try {
-            return !clazz1.getMethod(methodName, classes).equals(clazz2.getMethod(methodName, classes));
+            Method method1 = findMethod(clazz1, methodName, classes);
+            Method method2 = findMethod(clazz2, methodName, classes);
+            return !method1.equals(method2);
         } catch (NoSuchMethodException e) {
-            throw new RuntimeException("An error occurred while retrieving " + methodName + "(" + String.join(", ", Arrays.stream(classes).map(Class::getName).toList()) + ") in " + clazz1.getName() + ", " + clazz2.getName() + ", maybe the method name or parameters changed?");
+            ItsOurs.LOGGER.error("Failed to retrieve method {}({}) in {} or {}", methodName, String.join(", ", Arrays.stream(classes).map(Class::getName).toList()), clazz1.getName(), clazz2.getName());
+            ItsOurs.LOGGER.error("Method candidates for {}:", clazz1.toString());
+            logMethodCandidates(clazz1, methodName);
+            ItsOurs.LOGGER.error("Method candidates for {}:", clazz2.toString());
+            logMethodCandidates(clazz2, methodName);
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static Method findMethod(Class<?> clazz, String methodName, Class<?>... classes) throws NoSuchMethodException {
+        try {
+            return clazz.getDeclaredMethod(methodName, classes);
+        } catch (NoSuchMethodException e) {
+            Class<?> superClass = clazz.getSuperclass();
+            if (superClass != null) {
+                return findMethod(superClass, methodName, classes);
+            } else {
+                throw e;
+            }
+        }
+    }
+
+    private static void logMethodCandidates(Class<?> clazz, String methodName) {
+        for (Method method : clazz.getDeclaredMethods()) {
+            if (method.getName().equals(methodName)) {
+                ItsOurs.LOGGER.error("{}", method.toString());
+            }
+        }
+        Class<?> superClass = clazz.getSuperclass();
+        if (superClass != null) {
+            logMethodCandidates(superClass, methodName);
         }
     }
 

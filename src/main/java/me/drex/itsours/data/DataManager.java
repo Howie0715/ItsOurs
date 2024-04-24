@@ -9,7 +9,10 @@ import me.drex.itsours.claim.ClaimList;
 import me.drex.itsours.claim.permission.holder.PermissionData;
 import me.drex.itsours.user.PlayerData;
 import me.drex.itsours.util.Constants;
-import net.minecraft.nbt.*;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtIo;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Uuids;
 import net.minecraft.util.WorldSavePath;
@@ -69,7 +72,7 @@ public class DataManager {
                 dynamic = FIXER.update(ItsOursTypeReferences.ROOT, dynamic, dataVersion, CURRENT_DATA_VERSION);
                 NbtElement element = dynamic.getValue();
                 DataResult<?> dataResult = CODEC.parse(NbtOps.INSTANCE, element);
-                dataResult.getOrThrow(false, error -> LOGGER.error("Failed to parse claim data: '{}'", error));
+                dataResult.getOrThrow(error -> new IllegalStateException("Failed to parse claim data: '" + error + "'"));
                 LOGGER.info("Claim data loaded successfully");
             } catch (IOException e) {
                 LOGGER.error("Failed to load claim data {}", data, e);

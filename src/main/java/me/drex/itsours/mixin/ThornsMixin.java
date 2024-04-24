@@ -9,6 +9,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.ShulkerEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.ShulkerBulletEntity;
 import net.minecraft.registry.Registries;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -26,7 +27,7 @@ public abstract class ThornsMixin {
     )
     private void itsours$canInteract(LivingEntity user, Entity attacker, int level, CallbackInfo ci) {
         Optional<AbstractClaim> claim = ClaimList.getClaimAt(user.getWorld(), user.getBlockPos());
-        if (claim.isPresent() && !claim.get().hasPermission(user.getUuid(), PermissionManager.DAMAGE_ENTITY, Node.registry(Registries.ENTITY_TYPE, attacker.getType())) && !(attacker instanceof PlayerEntity) &&!(attacker instanceof ShulkerEntity)) {
+        if (claim.isPresent() && !claim.get().hasPermission(user.getUuid(), PermissionManager.DAMAGE_ENTITY, Node.registry(Registries.ENTITY_TYPE, attacker.getType())) && !(attacker instanceof PlayerEntity) &&!(attacker instanceof ShulkerBulletEntity)) {
             ci.cancel();
         }
     }

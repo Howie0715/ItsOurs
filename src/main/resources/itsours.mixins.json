@@ -30,6 +30,7 @@
     "ServerPlayerEntityMixin",
     "ServerPlayerInteractionManagerMixin",
     "SpawnRestrictionMixin",
+    "ThornsMixin",
     "TurtleEggBlockMixin",
     "WitherEntityMixin",
     "XpAbsorbMixin",

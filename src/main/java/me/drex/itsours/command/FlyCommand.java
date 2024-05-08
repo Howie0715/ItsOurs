@@ -6,6 +6,7 @@ import me.drex.itsours.ItsOurs;
 import me.drex.itsours.claim.ClaimList;
 import me.drex.itsours.claim.permission.PermissionManager;
 import me.drex.itsours.user.PlayerData;
+import net.minecraft.network.packet.s2c.play.PlayerAbilitiesS2CPacket;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.world.World;
@@ -35,7 +36,7 @@ public class FlyCommand extends ToggleCommand {
             if (newValue) {
                 player.getAbilities().allowFlying = true;
             }
-            player.sendAbilitiesUpdate();
+            player.networkHandler.sendPacket(new PlayerAbilitiesS2CPacket(player.getAbilities()));
         }
         super.afterToggle(src, newValue);
     }

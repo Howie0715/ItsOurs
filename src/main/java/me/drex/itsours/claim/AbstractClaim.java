@@ -15,6 +15,7 @@ import me.drex.itsours.data.DataManager;
 import me.drex.itsours.util.ClaimBox;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
+import net.minecraft.network.packet.s2c.play.PlayerAbilitiesS2CPacket;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -163,7 +164,7 @@ public abstract class AbstractClaim {
         if (player.getAbilities().allowFlying) {
             player.getAbilities().flying = cachedFlying;
         }
-        player.sendAbilitiesUpdate();
+        player.networkHandler.sendPacket(new PlayerAbilitiesS2CPacket(player.getAbilities()));
         if (showTip){
             player.sendMessage(messages.enter().map(Text::literal).orElse(localized("text.itsours.claim.enter", placeholders(player.server))), true);
         }
@@ -180,7 +181,7 @@ public abstract class AbstractClaim {
                     player.teleport(player.getServerWorld(), player.getX(), pos.getY(), player.getZ(), player.getYaw(), player.getPitch());
                 }
             }
-            player.sendAbilitiesUpdate();
+            player.networkHandler.sendPacket(new PlayerAbilitiesS2CPacket(player.getAbilities()));
             player.sendMessage(messages.leave().map(Text::literal).orElse(localized("text.itsours.claim.leave", placeholders(player.server))), true);
         }
     }

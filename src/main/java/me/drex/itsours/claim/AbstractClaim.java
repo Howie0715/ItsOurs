@@ -1,21 +1,21 @@
 package me.drex.itsours.claim;
 
 import me.drex.itsours.ItsOurs;
-import me.drex.itsours.claim.permission.Permission;
-import me.drex.itsours.claim.permission.PermissionManager;
-import me.drex.itsours.claim.permission.context.*;
-import me.drex.itsours.claim.permission.holder.PermissionData;
-import me.drex.itsours.claim.permission.node.ChildNode;
-import me.drex.itsours.claim.permission.util.Value;
-import me.drex.itsours.claim.permission.visitor.PermissionVisitor;
-import me.drex.itsours.claim.roles.ClaimRoleManager;
-import me.drex.itsours.claim.roles.Role;
+import me.drex.itsours.claim.flags.Flag;
+import me.drex.itsours.claim.flags.context.*;
+import me.drex.itsours.claim.flags.holder.FlagData;
+import me.drex.itsours.claim.flags.node.ChildNode;
+import me.drex.itsours.claim.flags.util.Value;
+import me.drex.itsours.claim.flags.visitor.FlagVisitor;
+import me.drex.itsours.claim.groups.ClaimGroupManager;
+import me.drex.itsours.claim.groups.Group;
+import me.drex.itsours.claim.list.ClaimList;
 import me.drex.itsours.claim.util.ClaimMessages;
 import me.drex.itsours.data.DataManager;
+import me.drex.itsours.user.ClaimTrackingPlayer;
 import me.drex.itsours.util.ClaimBox;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
-import net.minecraft.network.packet.s2c.play.PlayerAbilitiesS2CPacket;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -40,26 +40,26 @@ public abstract class AbstractClaim {
     public static final Block[] SHOW_BLOCKS_CENTER = {Blocks.BLUE_TERRACOTTA, Blocks.PURPLE_TERRACOTTA, Blocks.MAGENTA_TERRACOTTA, Blocks.PINK_TERRACOTTA, Blocks.RED_TERRACOTTA, Blocks.ORANGE_TERRACOTTA, Blocks.YELLOW_TERRACOTTA, Blocks.LIME_TERRACOTTA, Blocks.GREEN_TERRACOTTA, Blocks.CYAN_TERRACOTTA, Blocks.LIGHT_BLUE_TERRACOTTA};
     private final RegistryKey<World> dimension;
     private final List<Subzone> subzones;
-    private final PermissionData settings;
-    private final Map<UUID, PermissionData> permissions;
-    private final ClaimRoleManager roleManager;
+    private final FlagData flags;
+    private final Map<UUID, FlagData> playerFlags;
+    private final ClaimGroupManager groupManager;
     private final ClaimMessages messages;
     private String name;
     private ClaimBox box;
 
 
     public AbstractClaim(String name, ClaimBox box, ServerWorld world) {
-        this(name, box, world.getRegistryKey(), new ArrayList<>(), new PermissionData(), new HashMap<>(), new ClaimRoleManager(), new ClaimMessages());
+        this(name, box, world.getRegistryKey(), new ArrayList<>(), new FlagData(), new HashMap<>(), new ClaimGroupManager(), new ClaimMessages());
     }
 
-    public AbstractClaim(String name, ClaimBox box, RegistryKey<World> dimension, List<Subzone> subzones, PermissionData settings, Map<UUID, PermissionData> permissions, ClaimRoleManager roleManager, ClaimMessages messages) {
+    public AbstractClaim(String name, ClaimBox box, RegistryKey<World> dimension, List<Subzone> subzones, FlagData flags, Map<UUID, FlagData> playerFlags, ClaimGroupManager groupManager, ClaimMessages messages) {
         this.name = name;
         this.box = box;
         this.dimension = dimension;
         this.subzones = subzones;
-        this.settings = settings;
-        this.permissions = permissions;
-        this.roleManager = roleManager;
+        this.flags = flags;
+        this.playerFlags = playerFlags;
+        this.groupManager = groupManager;
         this.messages = messages;
     }
 
@@ -80,16 +80,16 @@ public abstract class AbstractClaim {
         return blockPos.up();
     }
 
-    public PermissionData getSettings() {
-        return settings;
+    public FlagData getFlags() {
+        return flags;
     }
 
-    public Map<UUID, PermissionData> getPermissions() {
-        return permissions;
+    public Map<UUID, FlagData> getPlayerFlags() {
+        return playerFlags;
     }
 
-    public ClaimRoleManager getRoleManager() {
-        return roleManager;
+    public ClaimGroupManager getGroupManager() {
+        return groupManager;
     }
 
     public boolean canRename(String newName) {
@@ -144,8 +144,8 @@ public abstract class AbstractClaim {
         this.subzones.remove(subzone);
     }
 
-    public void onEnter(@Nullable AbstractClaim previousClaim, ServerPlayerEntity player, boolean showTip) {
-        boolean hasPermission = ItsOurs.checkPermission(
+    public void onEnter(@Nullable AbstractClaim previousClaim, ServerPlayerEntity player) {
+        boolean isAllowed = ItsOurs.checkPermission(
                 player.getCommandSource(), "itsours.fly", 2)
                 && ClaimList.getClaimAt(player).isPresent()
                 && ClaimList.getClaimAt(player).get().hasPermission(null, PermissionManager.MISC)
@@ -153,18 +153,28 @@ public abstract class AbstractClaim {
                 || player.getWorld().getRegistryKey().equals(World.END)
                 || player.getWorld().getRegistryKey().equals(World.NETHER))
                 || player.hasPermissionLevel(4);
-        boolean cachedFlying = hasPermission && player.getAbilities().flying;
+        boolean cachedFlying = isAllowed && player.getAbilities().flying;
+        boolean cachedAllowFlying = player.getAbilities().allowFlying;
+        boolean requiresUpdate = false;
         // Update abilities for respective gamemode
         player.interactionManager.getGameMode().setAbilities(player.getAbilities());
         // Enable flying if player enabled it
         if (!player.getAbilities().allowFlying) {
-            player.getAbilities().allowFlying = DataManager.getUserData(player.getUuid()).flight() && hasPermission;
+            player.getAbilities().allowFlying = DataManager.getUserData(player.getUuid()).flight() && isAllowed;
         }
         // Set the flight state to what it was before entering
         if (player.getAbilities().allowFlying) {
             player.getAbilities().flying = cachedFlying;
         }
-        player.networkHandler.sendPacket(new PlayerAbilitiesS2CPacket(player.getAbilities()));
+
+        requiresUpdate |= cachedFlying != player.getAbilities().flying;
+        requiresUpdate |= cachedAllowFlying != player.getAbilities().allowFlying;
+
+        if (requiresUpdate) {
+            player.sendAbilitiesUpdate();
+        }
+
+        player.sendMessage(messages.enter().map(Text::literal).orElse(localized("text.itsours.claim.enter", placeholders(player.server))), true);
         if (showTip){
             player.sendMessage(messages.enter().map(Text::literal).orElse(localized("text.itsours.claim.enter", placeholders(player.server))), true);
         }
@@ -173,6 +183,8 @@ public abstract class AbstractClaim {
     public void onLeave(@Nullable AbstractClaim nextClaim, ServerPlayerEntity player) {
         if (nextClaim == null) {
             boolean cachedFlying = player.getAbilities().flying;
+            boolean cachedAllowFlying = player.getAbilities().allowFlying;
+            boolean requiresUpdate = false;
             // Update abilities for respective gamemode
             player.interactionManager.getGameMode().setAbilities(player.getAbilities());
             if (cachedFlying && !player.getAbilities().flying) {
@@ -181,40 +193,44 @@ public abstract class AbstractClaim {
                     player.teleport(player.getServerWorld(), player.getX(), pos.getY(), player.getZ(), player.getYaw(), player.getPitch());
                 }
             }
-            player.networkHandler.sendPacket(new PlayerAbilitiesS2CPacket(player.getAbilities()));
+            requiresUpdate |= cachedFlying != player.getAbilities().flying;
+            requiresUpdate |= cachedAllowFlying != player.getAbilities().allowFlying;
+            if (requiresUpdate) {
+                player.sendAbilitiesUpdate();
+            }
             player.sendMessage(messages.leave().map(Text::literal).orElse(localized("text.itsours.claim.leave", placeholders(player.server))), true);
         }
     }
 
-    public boolean hasPermission(@Nullable UUID uuid, Permission permission) {
-        PermissionVisitor visitor = PermissionVisitor.create();
-        visit(uuid, permission, visitor);
+    public boolean checkAction(@Nullable UUID uuid, Flag flag) {
+        FlagVisitor visitor = FlagVisitor.create();
+        visit(uuid, flag, visitor);
         return visitor.getResult().value;
     }
 
     /**
      * @param uuid  The uuid of the player that should be checked or null if action is not player specific
-     * @param nodes A list of nodes that form the permission that shall be checked
+     * @param nodes A list of nodes that form the flag that shall be checked
      * @return true if the requested action should proceed
      */
-    public boolean hasPermission(@Nullable UUID uuid, ChildNode... nodes) {
-        return hasPermission(uuid, Permission.permission(nodes));
+    public boolean checkAction(@Nullable UUID uuid, ChildNode... nodes) {
+        return checkAction(uuid, Flag.flag(nodes));
     }
 
-    public void visit(@Nullable UUID uuid, Permission permission, PermissionVisitor visitor) {
-        DataManager.defaultSettings().visit(this, permission, DefaultContext.INSTANCE, visitor);
-        settings.visit(this, permission, GlobalContext.INSTANCE, visitor);
+    public void visit(@Nullable UUID uuid, Flag flag, FlagVisitor visitor) {
+        DataManager.defaultSettings().visit(this, flag, DefaultContext.INSTANCE, visitor);
+        flags.visit(this, flag, GlobalContext.INSTANCE, visitor);
         if (uuid != null) {
-            if (Objects.equals(uuid, getOwner())) visitor.visit(this, permission, OwnerContext.INSTANCE, Value.ALLOW);
+            if (Objects.equals(uuid, getOwner())) visitor.visit(this, flag, OwnerContext.INSTANCE, Value.ALLOW);
             if (DataManager.getUserData(uuid).ignore())
-                visitor.visit(this, permission, IgnoreContext.INSTANCE, Value.ALLOW);
-            PermissionData playerPermissions = permissions.get(uuid);
-            if (playerPermissions != null) {
-                playerPermissions.visit(this, permission, PersonalContext.INSTANCE, visitor);
+                visitor.visit(this, flag, IgnoreContext.INSTANCE, Value.ALLOW);
+            FlagData playerFlags = this.playerFlags.get(uuid);
+            if (playerFlags != null) {
+                playerFlags.visit(this, flag, PlayerContext.INSTANCE, visitor);
             }
-            for (Map.Entry<String, Role> roleEntry : roleManager.roles().entrySet()) {
-                if (roleEntry.getValue().players().contains(uuid)) {
-                    roleEntry.getValue().permissions().visit(this, permission, new RoleContext(roleEntry.getKey(), roleManager.getPriority(roleEntry.getKey()), roleEntry.getValue()), visitor);
+            for (Map.Entry<String, Group> groupEntry : groupManager.groups().entrySet()) {
+                if (groupEntry.getValue().players().contains(uuid)) {
+                    groupEntry.getValue().flags().visit(this, flag, new GroupContext(groupEntry.getKey(), groupManager.getPriority(groupEntry.getKey()), groupEntry.getValue()), visitor);
                 }
             }
         }
@@ -246,6 +262,13 @@ public abstract class AbstractClaim {
         return box.contains(pos);
     }
 
+    public void notifyTrackingChanges(MinecraftServer server, boolean add) {
+        for (ServerPlayerEntity serverPlayerEntity : server.getPlayerManager().getPlayerList()) {
+            ClaimTrackingPlayer claimTrackingPlayer = ((ClaimTrackingPlayer) serverPlayerEntity);
+            claimTrackingPlayer.notifyChange(this, add);
+        }
+    }
+
     public String toString() {
         return String.format("%s[name=%s, full_name=%s, owner=%s, box=%s, world=%s, subzones=%s]", this.getClass().getSimpleName(), this.name, this.getFullName(), this.getOwner(), this.box.toString(), this.dimension.toString(), Arrays.toString(subzones.toArray()));
     }
@@ -258,8 +281,8 @@ public abstract class AbstractClaim {
                 prefix + "depth", literal(String.valueOf(getDepth())),
                 prefix + "dimension", literal(dimension.getValue().toString()),
                 prefix + "subzones", Text.literal(String.valueOf(subzones.size())),
-                prefix + "trusted", list(roleManager.getRole(ClaimRoleManager.TRUSTED).players(), uuid -> uuid("trusted_", uuid, server), "text.itsours.placeholders.trusted"),
-                prefix + "settings", settings.toText()
+                prefix + "trusted", list(groupManager.getGroup(ClaimGroupManager.TRUSTED).players(), uuid -> uuid("trusted_", uuid, server), "text.itsours.placeholders.trusted"),
+                prefix + "settings", flags.toText()
             ),
             uuid(prefix + "owner_", getOwner(), server),
             vec3i(prefix + "min_", box.getMin()),

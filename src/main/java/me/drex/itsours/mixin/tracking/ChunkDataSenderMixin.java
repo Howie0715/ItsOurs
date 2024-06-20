@@ -3,9 +3,7 @@ package me.drex.itsours.mixin.tracking;
 import com.llamalad7.mixinextras.sugar.Local;
 import me.drex.itsours.user.ClaimTrackingPlayer;
 import net.minecraft.server.network.ChunkDataSender;
-import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.chunk.WorldChunk;
 import org.spongepowered.asm.mixin.Mixin;
@@ -23,7 +21,7 @@ public abstract class ChunkDataSenderMixin {
         at = @At(
             value = "INVOKE",
             target = "Lnet/minecraft/server/network/ServerPlayNetworkHandler;sendPacket(Lnet/minecraft/network/packet/Packet;)V",
-            ordinal = 0
+            ordinal = 1
         )
     )
     private void itsours$onChunkLoad(ServerPlayerEntity player, CallbackInfo ci, @Local List<WorldChunk> chunks) {

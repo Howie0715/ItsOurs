@@ -5,8 +5,8 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import me.drex.itsours.claim.Claim;
-import me.drex.itsours.claim.ClaimList;
-import me.drex.itsours.claim.permission.holder.PermissionData;
+import me.drex.itsours.claim.list.ClaimList;
+import me.drex.itsours.claim.flags.holder.FlagData;
 import me.drex.itsours.user.PlayerData;
 import me.drex.itsours.util.Constants;
 import net.minecraft.nbt.*;
@@ -18,34 +18,32 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import static me.drex.itsours.ItsOurs.LOGGER;
 import static me.drex.itsours.data.ItsOursSchemas.FIXER;
 
 public class DataManager {
 
-    public static final int CURRENT_DATA_VERSION = 5;
-    private static final Map<UUID, PlayerData> playerData = new HashMap<>();
-    // TODO: Default defaultSettings
-    private static PermissionData defaultSettings = new PermissionData();
+    public static final int CURRENT_DATA_VERSION = 9;
+    private static Map<UUID, PlayerData> playerData = new HashMap<>();
+    private static FlagData defaultFlags = new FlagData();
     public static final Codec<?> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         ClaimList.CODEC.fieldOf("claims").forGetter((ignored) -> ClaimList.getClaims().stream().filter(claim -> claim instanceof Claim).map(claim -> (Claim) claim).toList()),
-        PermissionData.CODEC.fieldOf("default_settings").forGetter(ignored -> DataManager.defaultSettings()),
+        FlagData.CODEC.fieldOf("default_flags").forGetter(ignored -> DataManager.defaultSettings()),
         Codec.unboundedMap(Uuids.STRING_CODEC, PlayerData.CODEC).fieldOf("players").forGetter(ignored -> DataManager.playerData())
-    ).apply(instance, (claims, defaultPermissions, playerData) -> {
-        init(claims, defaultPermissions, playerData);
+    ).apply(instance, (claims, defaultFlags, playerData) -> {
+        init(claims, defaultFlags, playerData);
         return null;
     }));
 
-    public static void init(List<Claim> claims, PermissionData defaultPermissions, Map<UUID, PlayerData> players) {
+    public static final Set<String> unknownFlags = new HashSet<>();
+    private static boolean loadingFailed = false;
+
+    public static void init(List<Claim> claims, FlagData defaultFlags, Map<UUID, PlayerData> players) {
         ClaimList.load(claims);
-        playerData.clear();
-        playerData.putAll(players);
-        DataManager.defaultSettings = defaultPermissions;
+        playerData = new HashMap<>(players);
+        DataManager.defaultFlags = defaultFlags;
     }
 
     public static PlayerData getUserData(UUID uuid) {
@@ -70,16 +68,25 @@ public class DataManager {
                 NbtElement element = dynamic.getValue();
                 DataResult<?> dataResult = CODEC.parse(NbtOps.INSTANCE, element);
                 dataResult.getOrThrow(error -> new IllegalStateException("Failed to parse claim data: '" + error + "'"));
-                LOGGER.info("Claim data loaded successfully");
+                if (unknownFlags.isEmpty()) {
+                    LOGGER.info("Claim data loaded successfully");
+                } else {
+                    LOGGER.warn("Claim data loaded successfully, with {} unknown flags:", unknownFlags.size());
+                    for (String unknownFlag : unknownFlags) {
+                        LOGGER.warn(unknownFlag);
+                    }
+                }
             } catch (IOException e) {
                 LOGGER.error("Failed to load claim data {}", data, e);
+                loadingFailed = true;
             }
         }
     }
 
     public static void save(MinecraftServer server) {
+        if (loadingFailed) return;
         DataResult<NbtElement> dataResult = CODEC.encodeStart(NbtOps.INSTANCE, null);
-        NbtElement nbtElement = dataResult.resultOrPartial(error -> LOGGER.error("Failed tp encode claim data: '{}'", error)).orElseThrow();
+        NbtElement nbtElement = dataResult.resultOrPartial(error -> LOGGER.error("Failed to encode claim data: '{}'", error)).orElseThrow();
         Path data = server.getSavePath(WorldSavePath.ROOT).resolve("claims.dat");
         Path backup = server.getSavePath(WorldSavePath.ROOT).resolve("claims.dat_old");
         if (!(nbtElement instanceof NbtCompound root)) {
@@ -101,8 +108,8 @@ public class DataManager {
         }
     }
 
-    public static PermissionData defaultSettings() {
-        return defaultSettings;
+    public static FlagData defaultSettings() {
+        return defaultFlags;
     }
 
     public static Map<UUID, PlayerData> playerData() {

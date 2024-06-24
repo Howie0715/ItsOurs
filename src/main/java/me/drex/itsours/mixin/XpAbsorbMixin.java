@@ -1,8 +1,8 @@
 package me.drex.itsours.mixin;
 
 import me.drex.itsours.claim.AbstractClaim;
-import me.drex.itsours.claim.ClaimList;
-import me.drex.itsours.claim.permission.PermissionManager;
+import me.drex.itsours.claim.list.ClaimList;
+import me.drex.itsours.claim.flags.FlagsManager;
 import net.minecraft.entity.ExperienceOrbEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
@@ -25,7 +25,7 @@ public abstract class XpAbsorbMixin {
     )
     private void itsours$xpAbsorb(PlayerEntity player, CallbackInfo ci) {
         Optional<AbstractClaim> claim = ClaimList.getClaimAt(player.getWorld(), player.getSteppingPos());
-        if (claim.isPresent() && !claim.get().hasPermission(player.getUuid(), PermissionManager.XP_ABSORB)) {
+        if (claim.isPresent() && !claim.get().checkAction(player.getUuid(), FlagsManager.XP_ABSORB)) {
             ci.cancel();
             amount = 0;
         }

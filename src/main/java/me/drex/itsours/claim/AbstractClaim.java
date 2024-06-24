@@ -2,6 +2,7 @@ package me.drex.itsours.claim;
 
 import me.drex.itsours.ItsOurs;
 import me.drex.itsours.claim.flags.Flag;
+import me.drex.itsours.claim.flags.FlagsManager;
 import me.drex.itsours.claim.flags.context.*;
 import me.drex.itsours.claim.flags.holder.FlagData;
 import me.drex.itsours.claim.flags.node.ChildNode;
@@ -16,6 +17,7 @@ import me.drex.itsours.user.ClaimTrackingPlayer;
 import me.drex.itsours.util.ClaimBox;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
+import net.minecraft.network.packet.s2c.play.PlayerAbilitiesS2CPacket;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -148,7 +150,7 @@ public abstract class AbstractClaim {
         boolean isAllowed = ItsOurs.checkPermission(
                 player.getCommandSource(), "itsours.fly", 2)
                 && ClaimList.getClaimAt(player).isPresent()
-                && ClaimList.getClaimAt(player).get().hasPermission(null, PermissionManager.MISC)
+                && ClaimList.getClaimAt(player).get().checkAction(null, FlagsManager.GLIDE)
                 && (player.getWorld().getRegistryKey().equals(World.OVERWORLD)
                 || player.getWorld().getRegistryKey().equals(World.END)
                 || player.getWorld().getRegistryKey().equals(World.NETHER))
@@ -170,14 +172,11 @@ public abstract class AbstractClaim {
         requiresUpdate |= cachedFlying != player.getAbilities().flying;
         requiresUpdate |= cachedAllowFlying != player.getAbilities().allowFlying;
 
-        if (requiresUpdate) {
-            player.sendAbilitiesUpdate();
-        }
+//        if (requiresUpdate) {
+            player.networkHandler.sendPacket(new PlayerAbilitiesS2CPacket(player.getAbilities()));
+//        }
 
         player.sendMessage(messages.enter().map(Text::literal).orElse(localized("text.itsours.claim.enter", placeholders(player.server))), true);
-        if (showTip){
-            player.sendMessage(messages.enter().map(Text::literal).orElse(localized("text.itsours.claim.enter", placeholders(player.server))), true);
-        }
     }
 
     public void onLeave(@Nullable AbstractClaim nextClaim, ServerPlayerEntity player) {
@@ -196,7 +195,7 @@ public abstract class AbstractClaim {
             requiresUpdate |= cachedFlying != player.getAbilities().flying;
             requiresUpdate |= cachedAllowFlying != player.getAbilities().allowFlying;
             if (requiresUpdate) {
-                player.sendAbilitiesUpdate();
+                player.networkHandler.sendPacket(new PlayerAbilitiesS2CPacket(player.getAbilities()));
             }
             player.sendMessage(messages.leave().map(Text::literal).orElse(localized("text.itsours.claim.leave", placeholders(player.server))), true);
         }

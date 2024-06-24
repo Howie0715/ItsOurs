@@ -15,6 +15,7 @@ import net.minecraft.registry.Registries;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.network.ServerPlayerInteractionManager;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ItemActionResult;
@@ -88,7 +89,7 @@ public abstract class ServerPlayerInteractionManagerMixin {
             player.sendMessage(Text.of("請在 City 內交易"), true);
             return ActionResult.FAIL;
         }
-        if (claim.isEmpty() || !FlagsManager.INTERACT_BLOCK_PREDICATE.test(blockState.getBlock()))
+        if (claim.isEmpty() || !FlagsManager.INTERACT_BLOCK_PREDICATE.test(blockState.getBlock()) || blockState.getBlock().toString().equals("Block{universal_shops:trade_block}") || blockState.getBlock().toString().equals("Block{universal_shops:admin_trade_block}"))
             return original.call(blockState, world, playerEntity, hit);
         if (!claim.get().checkAction(playerEntity.getUuid(), FlagsManager.INTERACT_BLOCK, Node.registry(Registries.BLOCK, blockState.getBlock()))) {
             player.sendMessage(localized("text.itsours.action.disallowed.interact_block"), true);

@@ -3,6 +3,7 @@ package me.drex.itsours.mixin;
 import me.drex.itsours.claim.AbstractClaim;
 import me.drex.itsours.claim.list.ClaimList;
 import me.drex.itsours.data.DataManager;
+import net.minecraft.entity.Entity;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.PlayerManager;
@@ -14,6 +15,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Optional;
 
@@ -33,7 +35,19 @@ public abstract class PlayerManagerMixin {
     )
     public void itsours$onPlayerConnect(ClientConnection connection, ServerPlayerEntity player, ConnectedClientData clientData, CallbackInfo ci) {
         Optional<AbstractClaim> optional = ClaimList.getClaimAt(player);
-        optional.ifPresent(claim -> claim.onEnter(null, player, true));
+        optional.ifPresent(claim -> claim.onEnter(null, player));
+    }
+
+    @Inject(
+            method = "respawnPlayer",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/server/network/ServerPlayerEntity;onSpawn()V"
+            )
+    )
+    public void itsours$respawnPlayer(ServerPlayerEntity player, boolean alive, Entity.RemovalReason removalReason, CallbackInfoReturnable<ServerPlayerEntity> cir) {
+        Optional<AbstractClaim> optional = ClaimList.getClaimAt(player);
+        optional.ifPresent(claim -> claim.onEnter(null, player));
     }
 
     @Inject(method = "saveAllPlayerData", at = @At("HEAD"))

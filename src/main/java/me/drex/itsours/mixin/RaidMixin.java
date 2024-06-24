@@ -1,10 +1,11 @@
 package me.drex.itsours.mixin;
 
-import me.drex.itsours.claim.ClaimList;
-import me.drex.itsours.claim.permission.PermissionManager;
+import me.drex.itsours.claim.list.ClaimList;
+import me.drex.itsours.claim.flags.FlagsManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.village.raid.Raid;
 import net.minecraft.village.raid.RaidManager;
@@ -17,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(RaidManager.class)
 public abstract class RaidMixin extends PersistentState {
     @Inject(method = "startRaid", at = @At("HEAD"), cancellable = true)
-    public void startRaid(ServerPlayerEntity player, CallbackInfoReturnable<Raid> cir) {
+    public void startRaid(ServerPlayerEntity player, BlockPos pos, CallbackInfoReturnable<Raid> cir) {
         long x = player.getBlockX();
         long y = player.getBlockY();
         long z = player.getBlockZ();
@@ -25,7 +26,7 @@ public abstract class RaidMixin extends PersistentState {
         for (Entity entity : player.getServerWorld().getOtherEntities(player, new Box(
                 x - distance, y - distance, z - distance, x + distance, y + distance, z + distance
         ))) {
-            if (entity instanceof VillagerEntity && ClaimList.getClaimAt(entity).isPresent() &&  !ClaimList.getClaimAt(entity).get().hasPermission(null, PermissionManager.MOB_SPAWN)) {
+            if (entity instanceof VillagerEntity && ClaimList.getClaimAt(entity).isPresent() &&  !ClaimList.getClaimAt(entity).get().checkAction(null, FlagsManager.MOB_SPAWN)) {
                 cir.setReturnValue(null);
                 cir.cancel();
                 break;

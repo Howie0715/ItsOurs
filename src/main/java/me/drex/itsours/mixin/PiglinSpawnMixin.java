@@ -1,8 +1,8 @@
 package me.drex.itsours.mixin;
 
 import me.drex.itsours.claim.AbstractClaim;
-import me.drex.itsours.claim.ClaimList;
-import me.drex.itsours.claim.permission.PermissionManager;
+import me.drex.itsours.claim.list.ClaimList;
+import me.drex.itsours.claim.flags.FlagsManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.NetherPortalBlock;
 import net.minecraft.server.world.ServerWorld;
@@ -25,7 +25,7 @@ public abstract class PiglinSpawnMixin {
     )
     public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random, CallbackInfo ci) {
         Optional<AbstractClaim> claim = ClaimList.getClaimAt(world.toServerWorld(), pos);
-        if (claim.isPresent() && !claim.get().hasPermission(null, PermissionManager.MOB_SPAWN)) {
+        if (claim.isPresent() && !claim.get().checkAction(null, FlagsManager.MOB_SPAWN)) {
             ci.cancel();
         }
     }

@@ -1,8 +1,8 @@
 package me.drex.itsours.mixin;
 
 import me.drex.itsours.claim.AbstractClaim;
-import me.drex.itsours.claim.ClaimList;
-import me.drex.itsours.claim.permission.PermissionManager;
+import me.drex.itsours.claim.list.ClaimList;
+import me.drex.itsours.claim.flags.FlagsManager;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.mob.PatrolEntity;
 import net.minecraft.entity.raid.RaiderEntity;
@@ -32,7 +32,7 @@ public abstract class RaidEntityMixin extends PatrolEntity {
     protected void tick(CallbackInfo ci) {
         Raid raid = this.getRaid();
         Optional<AbstractClaim> claim = ClaimList.getClaimAt(this.getWorld(), this.getBlockPos());
-        if (claim.isPresent() && !claim.get().hasPermission(null, PermissionManager.MOB_SPAWN)) {
+        if (claim.isPresent() && !claim.get().checkAction(null, FlagsManager.MOB_SPAWN)) {
             assert raid != null;
             raid.getAllRaiders().forEach(raiderEntity -> raiderEntity.remove(RemovalReason.DISCARDED));
             raid.invalidate();

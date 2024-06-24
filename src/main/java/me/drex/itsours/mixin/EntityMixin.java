@@ -45,7 +45,7 @@ public abstract class EntityMixin {
             if (!Objects.equals(pclaim, claim)) {
                 if (player.networkHandler != null) {
                     if (pclaim != null) pclaim.onLeave(claim, player);
-                    if (claim != null) claim.onEnter(pclaim, player, true);
+                    if (claim != null) claim.onEnter(pclaim, player);
                 }
             }
             pclaim = claim;

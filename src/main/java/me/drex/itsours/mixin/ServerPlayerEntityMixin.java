@@ -2,7 +2,7 @@ package me.drex.itsours.mixin;
 
 import com.mojang.authlib.GameProfile;
 import me.drex.itsours.claim.AbstractClaim;
-import me.drex.itsours.claim.ClaimList;
+import me.drex.itsours.claim.list.ClaimList;
 import me.drex.itsours.data.DataManager;
 import me.drex.itsours.user.ClaimSelectingPlayer;
 import net.minecraft.entity.player.PlayerEntity;
@@ -72,16 +72,5 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Cl
     @Override
     public void setFirstPosition(BlockPos pos) {
         firstPos = pos;
-    }
-
-    @Inject(
-            method = "onSpawn",
-            at = @At("HEAD")
-    )
-    public void itsours$onSpawn(CallbackInfo ci) {
-        for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()){
-            Optional<AbstractClaim> optional = ClaimList.getClaimAt(player);
-            optional.ifPresent(claim -> claim.onEnter(null, player, false));
-        }
     }
 }

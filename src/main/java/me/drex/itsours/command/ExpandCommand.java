@@ -59,6 +59,10 @@ public class ExpandCommand extends AbstractCommand {
             src.sendError(localized("text.itsours.commands.shrink.shrunkToFar"));
             return 0;
         }
+        if (claim.getOwner() != uuid){
+            src.sendError(localized("text.itsours.argument.general.missingPermission"));
+            return 0;
+        }
         int areaIncrease = newArea - originalArea;
         for (AbstractClaim other : ClaimList.getClaims()) {
             if (

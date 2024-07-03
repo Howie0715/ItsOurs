@@ -59,7 +59,7 @@ public class ExpandCommand extends AbstractCommand {
             src.sendError(localized("text.itsours.commands.shrink.shrunkToFar"));
             return 0;
         }
-        if (claim.getOwner() != uuid){
+        if (!claim.getOwner().equals(uuid) && !player.hasPermissionLevel(4)){
             src.sendError(localized("text.itsours.argument.general.missingPermission"));
             return 0;
         }

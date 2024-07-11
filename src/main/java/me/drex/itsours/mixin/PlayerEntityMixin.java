@@ -113,7 +113,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
             () -> false,
             () -> original.call(itemStack),
             FlagsManager.GLIDE
-        );
+        ) && (this.getWorld().getRegistryKey().equals(World.OVERWORLD) || this.getWorld().getRegistryKey().equals(World.NETHER) || this.getWorld().getRegistryKey().equals(World.END) || this.hasPermissionLevel(4));
     }
 
 }

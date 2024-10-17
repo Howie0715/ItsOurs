@@ -111,13 +111,13 @@ public abstract class EntityMixin {
         }
         if (cause != null) {
             if (cause == this$entity) return;
-            if (!claim.get().checkAction(null, FlagsManager.PVP) && this$entity instanceof PlayerEntity) {
-                if (cause instanceof PlayerEntity player) {
-                    player.sendMessage(localized("text.itsours.action.disallowed.damage_player"), true);
-                }
-                cir.setReturnValue(true);
-                return;
-            }
+//            if (!claim.get().checkAction(null, FlagsManager.PVP) && this$entity instanceof PlayerEntity) {
+//                if (cause instanceof PlayerEntity player) {
+//                    player.sendMessage(localized("text.itsours.action.disallowed.damage_player"), true);
+//                }
+//                cir.setReturnValue(true);
+//                return;
+//            }
             if (!claim.get().checkAction(cause.getUuid(), FlagsManager.DAMAGE_ENTITY, Node.registry(Registries.ENTITY_TYPE, this.getType())) && !(this$entity instanceof PlayerEntity)) {
                 if (cause instanceof PlayerEntity player) {
                     player.sendMessage(localized("text.itsours.action.disallowed.damage_entity"), true);

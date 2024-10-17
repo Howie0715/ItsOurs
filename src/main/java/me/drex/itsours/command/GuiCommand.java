@@ -5,7 +5,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.drex.itsours.ItsOurs;
 import me.drex.itsours.claim.AbstractClaim;
-import me.drex.itsours.claim.flags.FlagsManager;
+import me.drex.itsours.claim.flags.Flags;
 import me.drex.itsours.command.argument.ClaimArgument;
 import me.drex.itsours.gui.ClaimGui;
 import me.drex.itsours.gui.GuiContext;
@@ -22,10 +22,13 @@ import static net.minecraft.server.command.CommandManager.literal;
 
 public class GuiCommand extends AbstractCommand {
 
-    public static final GuiCommand INSTANCE = new GuiCommand();
+    public static final GuiCommand ADVANCED = new GuiCommand(true);
+    public static final GuiCommand SIMPLE = new GuiCommand(false);
+    private final boolean advanced;
 
-    private GuiCommand() {
-        super("gui");
+    private GuiCommand(boolean advanced) {
+        super(advanced ? "gui-advanced" : "gui");
+        this.advanced = advanced;
     }
 
     @Override
@@ -40,8 +43,8 @@ public class GuiCommand extends AbstractCommand {
                 ClaimArgument.ownClaims()
                     .executes(ctx -> {
                         AbstractClaim claim = ClaimArgument.getClaim(ctx);
-                        validateAction(ctx.getSource(), claim, FlagsManager.MODIFY);
-                        new ClaimGui(new GuiContext(ctx.getSource().getPlayerOrThrow()), claim).open();
+                        validateAction(ctx.getSource(), claim, Flags.MODIFY);
+                        new ClaimGui(new GuiContext(ctx.getSource().getPlayerOrThrow()), claim, advanced).open();
                         return 1;
                     })
             )
@@ -51,7 +54,7 @@ public class GuiCommand extends AbstractCommand {
     private int executeOpenGui(ServerCommandSource src, Collection<GameProfile> targets) throws CommandSyntaxException {
         if (targets.isEmpty()) throw EntityArgumentType.PLAYER_NOT_FOUND_EXCEPTION.create();
         if (targets.size() > 1) throw EntityArgumentType.TOO_MANY_PLAYERS_EXCEPTION.create();
-        PlayerClaimListGui gui = new PlayerClaimListGui(new GuiContext(src.getPlayerOrThrow()), targets.iterator().next().getId());
+        PlayerClaimListGui gui = new PlayerClaimListGui(new GuiContext(src.getPlayerOrThrow()), targets.iterator().next().getId(), advanced);
         gui.open();
         return 1;
     }

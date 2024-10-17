@@ -3,12 +3,12 @@ package me.drex.itsours.mixin;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import me.drex.itsours.claim.AbstractClaim;
-import me.drex.itsours.claim.flags.FlagsManager;
+import me.drex.itsours.claim.flags.Flags;
 import me.drex.itsours.claim.flags.node.Node;
 import me.drex.itsours.claim.list.ClaimList;
 import net.minecraft.block.Blocks;
 import net.minecraft.enchantment.EnchantmentEffectContext;
-import net.minecraft.enchantment.effect.entity.ReplaceDiscEnchantmentEffectType;
+import net.minecraft.enchantment.effect.entity.ReplaceDiskEnchantmentEffect;
 import net.minecraft.entity.Entity;
 import net.minecraft.registry.Registries;
 import net.minecraft.server.world.ServerWorld;
@@ -19,8 +19,8 @@ import org.spongepowered.asm.mixin.injection.At;
 
 import java.util.Optional;
 
-@Mixin(ReplaceDiscEnchantmentEffectType.class)
-public abstract class ReplaceDiscEnchantmentEffectTypeMixin {
+@Mixin(ReplaceDiskEnchantmentEffect.class)
+public abstract class ReplaceDiskEnchantmentEffectMixin {
 
     @WrapOperation(
         method = "apply",
@@ -31,7 +31,7 @@ public abstract class ReplaceDiscEnchantmentEffectTypeMixin {
     )
     private double itsours$canFreezeWater(BlockPos pos, double x, double y, double z, Operation<Double> original, ServerWorld world, int level, EnchantmentEffectContext context, Entity entity, Vec3d vec3d) {
         Optional<AbstractClaim> optional = ClaimList.getClaimAt(world, pos);
-        Boolean canPlace = optional.map(claim -> claim.checkAction(entity.getUuid(), FlagsManager.PLACE, Node.registry(Registries.BLOCK, Blocks.FROSTED_ICE.getDefaultState().getBlock()))).orElse(true);
+        Boolean canPlace = optional.map(claim -> claim.checkAction(entity.getUuid(), Flags.PLACE, Node.registry(Registries.BLOCK, Blocks.FROSTED_ICE.getDefaultState().getBlock()))).orElse(true);
         if (canPlace) {
             return original.call(pos, x, y, z);
         } else {

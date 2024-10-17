@@ -4,11 +4,12 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import me.drex.itsours.claim.AbstractClaim;
 import me.drex.itsours.claim.list.ClaimList;
-import me.drex.itsours.claim.flags.FlagsManager;
+import me.drex.itsours.claim.flags.Flags;
 import me.drex.itsours.claim.flags.node.Node;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.boss.WitherEntity;
 import net.minecraft.registry.Registries;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
@@ -23,13 +24,13 @@ public abstract class WitherEntityMixin {
         method = "mobTick",
         at = @At(
             value = "INVOKE",
-            target = "Lnet/minecraft/world/World;breakBlock(Lnet/minecraft/util/math/BlockPos;ZLnet/minecraft/entity/Entity;)Z"
+            target = "Lnet/minecraft/server/world/ServerWorld;breakBlock(Lnet/minecraft/util/math/BlockPos;ZLnet/minecraft/entity/Entity;)Z"
         )
     )
-    private boolean itsours$canWitherBreakBlock(World world, BlockPos pos, boolean drop, Entity breakingEntity, Operation<Boolean> original) {
+    private boolean itsours$canWitherBreakBlock(ServerWorld world, BlockPos pos, boolean drop, Entity breakingEntity, Operation<Boolean> original) {
         Optional<AbstractClaim> optional = ClaimList.getClaimAt(world, pos);
         if (optional.isPresent()) {
-            if (!optional.get().checkAction(breakingEntity.getUuid(), FlagsManager.MINE, Node.registry(Registries.BLOCK, world.getBlockState(pos).getBlock()))) {
+            if (!optional.get().checkAction(breakingEntity.getUuid(), Flags.MINE, Node.registry(Registries.BLOCK, world.getBlockState(pos).getBlock()))) {
                 return false;
             }
         }

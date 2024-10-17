@@ -2,7 +2,6 @@ package me.drex.itsours.claim;
 
 import me.drex.itsours.ItsOurs;
 import me.drex.itsours.claim.flags.Flag;
-import me.drex.itsours.claim.flags.FlagsManager;
 import me.drex.itsours.claim.flags.context.*;
 import me.drex.itsours.claim.flags.holder.FlagData;
 import me.drex.itsours.claim.flags.node.ChildNode;
@@ -18,6 +17,7 @@ import me.drex.itsours.util.ClaimBox;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.network.packet.s2c.play.PlayerAbilitiesS2CPacket;
+import net.minecraft.network.packet.s2c.play.PositionFlag;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -189,7 +189,7 @@ public abstract class AbstractClaim {
             if (cachedFlying && !player.getAbilities().flying) {
                 BlockPos pos = getPosOnGround(player.getBlockPos(), player.getWorld());
                 if (pos.getY() + 3 < player.getY()) {
-                    player.teleport(player.getServerWorld(), player.getX(), pos.getY(), player.getZ(), player.getYaw(), player.getPitch());
+                    player.teleport(player.getServerWorld(), player.getX(), pos.getY(), player.getZ(), EnumSet.noneOf(PositionFlag.class), player.getYaw(), player.getPitch(), true);
                 }
             }
             requiresUpdate |= cachedFlying != player.getAbilities().flying;
@@ -280,8 +280,8 @@ public abstract class AbstractClaim {
                 prefix + "depth", literal(String.valueOf(getDepth())),
                 prefix + "dimension", literal(dimension.getValue().toString()),
                 prefix + "subzones", Text.literal(String.valueOf(subzones.size())),
-                prefix + "trusted", list(groupManager.getGroup(ClaimGroupManager.TRUSTED).players(), uuid -> uuid("trusted_", uuid, server), "text.itsours.placeholders.trusted"),
-                prefix + "settings", flags.toText()
+                prefix + "trusted", list(groupManager.trusted.players(), uuid -> uuid("trusted_", uuid, server), "text.itsours.placeholders.trusted"),
+                prefix + "flags", flags.toText()
             ),
             uuid(prefix + "owner_", getOwner(), server),
             vec3i(prefix + "min_", box.getMin()),

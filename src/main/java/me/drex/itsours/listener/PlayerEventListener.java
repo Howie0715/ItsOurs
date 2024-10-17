@@ -1,8 +1,9 @@
 package me.drex.itsours.listener;
 
 import me.drex.itsours.claim.AbstractClaim;
+import me.drex.itsours.claim.flags.util.FlagBuilderUtil;
 import me.drex.itsours.claim.list.ClaimList;
-import me.drex.itsours.claim.flags.FlagsManager;
+import me.drex.itsours.claim.flags.Flags;
 import me.drex.itsours.claim.flags.node.Node;
 import me.drex.itsours.data.DataManager;
 import me.drex.itsours.user.ClaimSelectingPlayer;
@@ -16,7 +17,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -39,7 +39,7 @@ public class PlayerEventListener {
         ClaimSelectingPlayer claimSelectingPlayer = (ClaimSelectingPlayer) player;
         final BlockPos pos = hitResult.getBlockPos();
         if (shouldSelect(player, hand, claimSelectingPlayer.getSecondPosition(), pos)) {
-            player.sendMessage(localized("text.itsours.select.pos2", PlaceholderUtil.vec3i("pos_", pos)));
+            player.sendMessage(localized("text.itsours.select.pos2", PlaceholderUtil.vec3i("pos_", pos)), false);
             claimSelectingPlayer.setSecondPosition(pos);
             onSelectCorner(player);
             return ActionResult.SUCCESS;
@@ -50,7 +50,7 @@ public class PlayerEventListener {
     private static ActionResult onBlockAttack(PlayerEntity player, World world, Hand hand, BlockPos pos, Direction direction) {
         ClaimSelectingPlayer claimSelectingPlayer = (ClaimSelectingPlayer) player;
         if (shouldSelect(player, hand, claimSelectingPlayer.getFirstPosition(), pos)) {
-            player.sendMessage(localized("text.itsours.select.pos1", PlaceholderUtil.vec3i("pos_", pos)));
+            player.sendMessage(localized("text.itsours.select.pos1", PlaceholderUtil.vec3i("pos_", pos)), false);
             claimSelectingPlayer.setFirstPosition(pos);
             onSelectCorner(player);
             return ActionResult.SUCCESS;
@@ -58,25 +58,25 @@ public class PlayerEventListener {
         return ActionResult.PASS;
     }
 
-    private static TypedActionResult<ItemStack> onInteractItem(PlayerEntity player, World world, Hand hand) {
+    private static ActionResult onInteractItem(PlayerEntity player, World world, Hand hand) {
         ItemStack stack = player.getStackInHand(hand);
         Optional<AbstractClaim> claim = ClaimList.getClaimAt(player);
-        if (claim.isEmpty() || !FlagsManager.USE_ITEM_PREDICATE.test(stack.getItem()))
-            return TypedActionResult.pass(stack);
-        if (!claim.get().checkAction(player.getUuid(), FlagsManager.USE_ITEM, Node.registry(Registries.ITEM, stack.getItem()))) {
+        if (claim.isEmpty() || !FlagBuilderUtil.USE_ITEM_PREDICATE.test(stack.getItem()))
+            return ActionResult.PASS;
+        if (!claim.get().checkAction(player.getUuid(), Flags.USE_ITEM, Node.registry(Registries.ITEM, stack.getItem()))) {
             player.sendMessage(localized("text.itsours.action.disallowed.interact_item"), true);
-            return TypedActionResult.fail(stack);
+            return ActionResult.FAIL;
         }
-        return TypedActionResult.pass(stack);
+        return ActionResult.PASS;
     }
 
     private static void onSelectCorner(PlayerEntity player) {
         ClaimSelectingPlayer claimSelectingPlayer = (ClaimSelectingPlayer) player;
         if (claimSelectingPlayer.arePositionsSet()) {
             if (ClaimList.getClaimsFrom(player.getUuid()).isEmpty()) {
-                player.sendMessage(localized("text.itsours.select.done.first"));
+                player.sendMessage(localized("text.itsours.select.done.first"), false);
             } else {
-                player.sendMessage(localized("text.itsours.select.done"));
+                player.sendMessage(localized("text.itsours.select.done"), false);
             }
         }
     }

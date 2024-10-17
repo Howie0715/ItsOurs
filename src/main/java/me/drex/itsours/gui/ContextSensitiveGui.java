@@ -50,7 +50,8 @@ public interface ContextSensitiveGui extends GuiInterface {
     }
 
     default void click() {
-        context().player.playSound(SoundEvents.UI_BUTTON_CLICK.value(), 0.5f, 1);
+        ServerPlayerEntity player = context().player;
+        context().player.networkHandler.sendPacket(new PlaySoundS2CPacket(Registries.SOUND_EVENT.getEntry(SoundEvents.UI_BUTTON_CLICK.value()), SoundCategory.MASTER, player.getX(), player.getY(), player.getZ(), 1, 1, 0));
     }
 
 }

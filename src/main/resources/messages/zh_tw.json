@@ -168,7 +168,7 @@
   "text.itsours.flags.item_pick.description": "撿起物品",
   "text.itsours.flags.xp_absorb.description": "吸收經驗",
   "text.itsours.flags.glide.description": "領地飛行、鞘翅飛行",
-  "text.itsours.flags.modify.description": "領地調整權限 (eg. 過展領地)",
+  "text.itsours.flags.modify.description": "領地調整權限 (eg. 擴展領地)",
   "text.itsours.flags.modify.size.description": "擴展 & 縮減領地",
   "text.itsours.flags.modify.permission.description": "變更設定、權限、身份組",
   "text.itsours.flags.modify.message.description": "變更「進出」領地的提示訊息",
@@ -185,5 +185,6 @@
   "text.itsours.flag.context.group": "<hover:'<italic>建立身份組，同時調整一群人的設定'>身份組 <italic>(${group_id})</italic></hover>",
   "text.itsours.flag.context.player": "<hover:'<italic>針對特定玩家的設定(會覆寫全體設定)'>個人</hover>",
   "text.itsours.flag.context.owner": "<hover:'<italic>地主擁有所有權限'>地主</hover>",
-  "text.itsours.flag.context.ignore": "<hover:'<italic>無視 <bold>所有設定</bold> else'>忽視</hover>"
+  "text.itsours.flag.context.ignore": "<hover:'<italic>無視 <bold>所有設定</bold> else'>忽視</hover>",
+  "text.itsours.action.disallowed.misc.elytra": "<red>您無法在此使用鞘翅"
 }

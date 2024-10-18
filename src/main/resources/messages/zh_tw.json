@@ -1,11 +1,11 @@
 {
-  "text.itsours.action.disallowed.interact_item": "<red>您無法在此使用此物品",
+  "text.itsours.action.disallowed.interact_item": "<red>您無法在使用此物品",
   "text.itsours.action.disallowed.interact_item_on_block": "<red>您無法對此方塊使用此物品",
   "text.itsours.action.disallowed.interact_entity": "<red>您無法在此與該實體互動",
   "text.itsours.action.disallowed.place_block": "<red>您無法在此放置方塊",
   "text.itsours.action.disallowed.interact_block": "<red>您無法在此與該方塊互動",
   "text.itsours.action.disallowed.break_block": "<red>您無法在此破壞方塊",
-  "text.itsours.action.disallowed.damage_player": "<red>您無法在此打架(bAd)",
+  "text.itsours.action.disallowed.damage_player": "<red>您無法在此打架",
   "text.itsours.action.disallowed.damage_entity": "<red>您無法在此傷害實體",
   "text.itsours.action.disallowed.elytra": "<red>您無法在此使用鞘翅",
   "text.itsours.argument.general.missingPermission": "您沒有權限",
@@ -40,7 +40,7 @@
   "text.itsours.commands.expand.outOfWorld": "請調整擴展面向，不可朝天上或地下",
   "text.itsours.commands.shrink": "領地 '{claim_name}' 已朝${direction}縮減 ${distance} 格，已退還 ${blocks} 格 領地格數",
   "text.itsours.commands.shrink.shrunkToFar": "您無法縮減如此多的格數r",
-  "text.itsours.commands.info": "<white><bold>領地資訊:</bold>\n<yellow>* 名稱: <aqua>${claim_full_name}\n<yellow>* 擁有人: <light_purple><hover:'<italic>點我複製uuid!'><copy_to_clipboard:${claim_owner_uuid}>${claim_owner_name}</copy_to_clipboard></hover>\n<yellow>* 大小: <gray>${claim_size_x} <white>x <gray>${claim_size_y} <white>x <gray>${claim_size_z}\n<yellow>* 高度: <red>${claim_depth}\n<yellow>* 位置: <hover:'<italic>Click to teleport!'><run_cmd:'/execute in ${claim_dimension} run tp @s ${claim_center_x} ~ ${claim_center_z}'><gold>${claim_min_x} ${claim_min_y} ${claim_min_z}</gold> <white>to</white> <gold>${claim_max_x} ${claim_max_y} ${claim_max_z}</gold></run_cmd></hover>\n<yellow>* 已授權玩家: <dark_green>${claim_trusted}\n<yellow>* 維度: <green>${claim_dimension}",
+  "text.itsours.commands.info": "<white><bold>領地資訊:</bold>\n<yellow>* 名稱: <aqua>${claim_full_name}\n<yellow>* 擁有人: <light_purple><hover:'<italic>點我複製uuid!'><copy_to_clipboard:${claim_owner_uuid}>${claim_owner_name}</copy_to_clipboard></hover>\n<yellow>* 大小: <gray>${claim_size_x} <white>x <gray>${claim_size_y} <white>x <gray>${claim_size_z}\n<yellow>* 高度: <red>${claim_depth}\n<yellow>* 位置: <hover:'<italic>Click to teleport!'><run_cmd:'/execute in ${claim_dimension} run tp @s ${claim_center_x} ~ ${claim_center_z}'><gold>${claim_min_x} ${claim_min_y} ${claim_min_z}</gold> <white>to</white> <gold>${claim_max_x} ${claim_max_y} ${claim_max_z}</gold></run_cmd></hover>\n<yellow>* 權限設定: ${claim_flags}\n<yellow>* 已授權玩家: <dark_green>${claim_trusted}\n<yellow>* 維度: <green>${claim_dimension}",
   "text.itsours.commands.fly.enabled": "<green>開啟領地飛行",
   "text.itsours.commands.fly.disabled": "<red>關閉領地飛行",
   "text.itsours.commands.select.enabled": "<green>已開啟領地匡選功能 (使用滑鼠左右鍵選擇對角線)",
@@ -92,7 +92,7 @@
   "text.itsours.gui.previousPage": "上一頁",
   "text.itsours.gui.claim.title": "${claim_full_name} | 領地調整",
   "text.itsours.gui.default.title": "預設領地設定 | ${flag}",
-  "text.itsours.gui.groupnode.title": "${flag} | 整合的細項",
+  "text.itsours.gui.groupnode.title": "${flag} | 整合的項目",
   "text.itsours.gui.claimlist.player.title": "${player_name}的領地",
   "text.itsours.gui.claimlist.claim.title": "${claim_full_name}的子領地",
   "text.itsours.gui.claimlist.default.name": "<aqua>預設領地設定",
@@ -100,7 +100,6 @@
   "text.itsours.gui.claimlist.entry.name": "${claim_full_name}",
   "text.itsours.gui.claimlist.entry.lore": "子領地: <aqua>${claim_subzones}</aqua>\n\n<keybind:key.attack>: <gray>打開領地調整</gray>\n<keybind:key.use>: <gray>打開子領地列表</gray>",
   "text.itsours.gui.group.title": "${group_id} | ${flag}",
-  "text.itsours.gui.flags.title": "${claim_full_name} | ${flag}",
   "text.itsours.gui.playerflags.title": "${player_name} | ${flag}",
   "text.itsours.gui.groupmanager.title": "${claim_full_name} | 身份組管理",
   "text.itsours.gui.groupmanager.add": "<green>新增身份組",
@@ -121,28 +120,162 @@
   "text.itsours.gui.playermanager.filter.all": "全部",
   "text.itsours.gui.playermanager.filter.trusted": "已授權",
   "text.itsours.gui.playermanager.filter.not_trusted": "未授權",
-  "text.itsours.gui.flags.element.lore.simple": "${description}\n狀態: <bold>${value}</bold>\n\n<keybind:key.attack>: <#a1ffa1>開放</color> / <#ffa1a1>禁止</color> 權限",
-  "text.itsours.gui.flags.element.lore.complex": "${description}\n狀態: <bold>${value}</bold>\n\n<keybind:key.attack>: <#a1ffa1>開放</color> / <#ffa1a1>禁止</color> 權限\n<keybind:key.use>: <gray>查看包含的項目</gray>",
-  "text.itsours.gui.flags.element.lore.group": "${description}\n狀態: <bold>${value}</bold>\n\n<keybind:key.attack>: <#a1ffa1>開放</color> / <#ffa1a1>禁止</color> 權限\n<keybind:key.pickItem>: <gray>查看整合的細項 </gray>",
-  "text.itsours.gui.flags.filter.all": "全部",
-  "text.itsours.gui.flags.filter.single": "單一設定",
-  "text.itsours.gui.flags.filter.group": "整合設定",
-  "text.itsours.gui.flags.filter.modified": "調整設定",
+
+  "text.itsours.gui.playermanager.simple.trust": "<gold>授權玩家",
+
+  "text.itsours.gui.playermanager.simple.entry.trusted.name": "<gray>${player_name} <gold>(一般成員)",
+  "text.itsours.gui.playermanager.simple.entry.trusted.lore": "<yellow>身份: <gold>一般成員\n<gray>已獲得所有領地操作權限\n\n<white><keybind:key.attack>: 升為 <light_purple>管理員(moderator) <red><bold>請謹慎指派</bold>\n<white><keybind:key.use>: <red>移除授權",
+
+  "text.itsours.gui.playermanager.simple.entry.moderator.name": "<gray>${player_name} <light_purple>(管理員)",
+    "text.itsours.gui.playermanager.simple.entry.moderator.lore": "<yellow>身份: <light_purple>管理員\n<gray>已獲得所有領地權限，可管理成員及權限設定\n\n<white><keybind:key.use>: 降為 <gold>一般成員(trusted)",
+
+  "text.itsours.gui.flags.advanced.title": "進階領地調整 ${claim_full_name} | ${flag}",
+  "text.itsours.gui.flags.advanced.element.lore.simple": "${description}\n狀態: <bold>${value}</bold>\n\n<keybind:key.attack>: <#a1ffa1>開放</color> / <#ffa1a1>禁止</color> 權限",
+  "text.itsours.gui.flags.advanced.element.lore.complex": "${description}\n狀態: <bold>${value}</bold>\n\n<keybind:key.attack>: <#a1ffa1>開放</color> / <#ffa1a1>禁止</color> 權限\n<keybind:key.use>: <gray>針對不同項目逐一調整</gray>",
+  "text.itsours.gui.flags.advanced.element.lore.group": "${description}\n狀態: <bold>${value}</bold>\n\n<keybind:key.attack>: <#a1ffa1>開放</color> / <#ffa1a1>禁止</color> 權限\n<keybind:key.pickItem>: <gray>查看其整合的項目</gray>",
+  "text.itsours.gui.flags.advanced.filter.all": "全部",
+  "text.itsours.gui.flags.advanced.filter.single": "單一權限",
+  "text.itsours.gui.flags.advanced.filter.group": "整合權限",
+  "text.itsours.gui.flags.advanced.filter.modified": "已調整權限",
+
+  "text.itsours.gui.flags.simple.title": "基本領地調整 ${claim_full_name} | 常用權限",
+
+  "text.itsours.gui.flags.simple.mine.name": "<gold>挖掘",
+  "text.itsours.gui.flags.simple.mine.description": "<yellow>破壞領地內方塊",
+
+  "text.itsours.gui.flags.simple.place.name": "<gold>放置",
+  "text.itsours.gui.flags.simple.place.description": "<yellow>於領地內放置方塊",
+
+  "text.itsours.gui.flags.simple.damage_entity.name": "<gold>傷害實體",
+  "text.itsours.gui.flags.simple.damage_entity.description": "<yellow>攻擊領地內的生物",
+
+  "text.itsours.gui.flags.simple.glide.name": "<gold>飛行",
+  "text.itsours.gui.flags.simple.glide.description": "<yellow>鞘翅及領地飛行",
+
+  "text.itsours.gui.flags.simple.pvp.name": "<gold>PvP",
+  "text.itsours.gui.flags.simple.pvp.description": "<yellow>玩家間互相傷害",
+
+  "text.itsours.gui.flags.simple.explosions.name": "<gold>爆炸",
+  "text.itsours.gui.flags.simple.explosions.description": "<yellow>爆炸破壞地形",
+
+  "text.itsours.gui.flags.simple.piston_crosses_borders.name": "<gold>活塞越界",
+  "text.itsours.gui.flags.simple.piston_crosses_borders.description": "<yellow>活塞伸縮出邊界",
+
+  "text.itsours.gui.flags.simple.fluid_crosses_borders.name": "<gold>流體越界",
+  "text.itsours.gui.flags.simple.fluid_crosses_borders.description": "<yellow>液體流動出邊界",
+
+  "text.itsours.gui.flags.simple.sculk_crosses_borders.name": "<gold>伏聆越界",
+  "text.itsours.gui.flags.simple.sculk_crosses_borders.description": "<yellow>伏聆蔓延出邊界",
+
+  "text.itsours.gui.flags.simple.use_item.bow.name": "<gold>使用弓",
+  "text.itsours.gui.flags.simple.use_item.bow.description": "<yellow>",
+
+  "text.itsours.gui.flags.simple.use_item.crossbow.name": "<gold>使用弩",
+  "text.itsours.gui.flags.simple.use_item.crossbow.description": "<yellow>",
+
+  "text.itsours.gui.flags.simple.use_item.ender_pearl.name": "<gold>使用終界珍珠",
+  "text.itsours.gui.flags.simple.use_item.ender_pearl.description": "<yellow>",
+
+  "text.itsours.gui.flags.simple.interact_entity.BOAT.name": "<gold>坐船",
+  "text.itsours.gui.flags.simple.interact_entity.BOAT.description": "<yellow>",
+
+  "text.itsours.gui.flags.simple.interact_entity.minecart.name": "<gold>坐礦車",
+  "text.itsours.gui.flags.simple.interact_entity.minecart.description": "<yellow>",
+
+  "text.itsours.gui.flags.simple.interact_entity.villager.name": "<gold>與村民交易",
+  "text.itsours.gui.flags.simple.interact_entity.villager.description": "<yellow>",
+
+  "text.itsours.gui.flags.simple.interact_block.chest.name": "<gold>使用箱子",
+  "text.itsours.gui.flags.simple.interact_block.chest.description": "<yellow>",
+
+  "text.itsours.gui.flags.simple.interact_block.barrel.name": "<gold>使用木桶",
+  "text.itsours.gui.flags.simple.interact_block.barrel.description": "<yellow>",
+
+  "text.itsours.gui.flags.simple.interact_block.hopper.name": "<gold>使用漏斗",
+  "text.itsours.gui.flags.simple.interact_block.hopper.description": "<yellow>",
+
+  "text.itsours.gui.flags.simple.interact_block.stonecutter.name": "<gold>使用切石器",
+  "text.itsours.gui.flags.simple.interact_block.stonecutter.description": "<yellow>",
+
+  "text.itsours.gui.flags.simple.interact_block.cartography_table.name": "<gold>使用製圖台",
+  "text.itsours.gui.flags.simple.interact_block.cartography_table.description": "<yellow>",
+
+  "text.itsours.gui.flags.simple.interact_block.smithing_table.name": "<gold>使用鍛造台",
+  "text.itsours.gui.flags.simple.interact_block.smithing_table.description": "<yellow>",
+
+  "text.itsours.gui.flags.simple.interact_block.grindstone.name": "<gold>使用砂輪",
+  "text.itsours.gui.flags.simple.interact_block.grindstone.description": "<yellow>",
+
+  "text.itsours.gui.flags.simple.interact_block.furnace.name": "<gold>使用熔爐",
+  "text.itsours.gui.flags.simple.interact_block.furnace.description": "<yellow>",
+
+  "text.itsours.gui.flags.simple.interact_block.blast_furnace.name": "<gold>使用高爐",
+  "text.itsours.gui.flags.simple.interact_block.blast_furnace.description": "<yellow>",
+
+  "text.itsours.gui.flags.simple.interact_block.smoker.name": "<gold>使用煙燻爐",
+  "text.itsours.gui.flags.simple.interact_block.smoker.description": "<yellow>",
+
+  "text.itsours.gui.flags.simple.interact_block.beacon.name": "<gold>使用烽火台",
+  "text.itsours.gui.flags.simple.interact_block.beacon.description": "<yellow>",
+
+  "text.itsours.gui.flags.simple.interact_block.enchanting_table.name": "<gold>使用附魔台",
+  "text.itsours.gui.flags.simple.interact_block.enchanting_table.description": "<yellow>",
+
+  "text.itsours.gui.flags.simple.interact_block.jukebox.name": "<gold>使用唱片機",
+  "text.itsours.gui.flags.simple.interact_block.jukebox.description": "<yellow>",
+
+  "text.itsours.gui.flags.simple.interact_block.ender_chest.name": "<gold>使用終界箱",
+  "text.itsours.gui.flags.simple.interact_block.ender_chest.description": "<yellow>",
+
+  "text.itsours.gui.flags.simple.interact_block.lectern.name": "<gold>使用講台",
+  "text.itsours.gui.flags.simple.interact_block.lectern.description": "<yellow>",
+
+  "text.itsours.gui.flags.simple.interact_block.BEDS.name": "<gold>上床睡覺",
+  "text.itsours.gui.flags.simple.interact_block.BEDS.description": "<yellow>",
+
+  "text.itsours.gui.flags.simple.interact_block.ALL_SIGNS.name": "<gold>編輯告示牌",
+  "text.itsours.gui.flags.simple.interact_block.ALL_SIGNS.description": "<yellow>",
+
+  "text.itsours.gui.flags.simple.interact_block.ANVIL.name": "<gold>使用鐵砧",
+  "text.itsours.gui.flags.simple.interact_block.ANVIL.description": "<yellow>",
+
+  "text.itsours.gui.flags.simple.interact_block.SHULKER_BOXES.name": "<gold>使用界伏盒",
+  "text.itsours.gui.flags.simple.interact_block.SHULKER_BOXES.description": "<yellow>",
+
+  "text.itsours.gui.flags.simple.interact_block.PRESSURE_PLATES.name": "<gold>踩壓力版",
+  "text.itsours.gui.flags.simple.interact_block.PRESSURE_PLATES.description": "<yellow>",
+
+  "text.itsours.gui.flags.simple.interact_block.BUTTONS.name": "<gold>按壓按鈕",
+  "text.itsours.gui.flags.simple.interact_block.BUTTONS.description": "<yellow>",
+
+  "text.itsours.gui.flags.simple.interact_block.FENCE_GATES.name": "<gold>使用柵欄門",
+  "text.itsours.gui.flags.simple.interact_block.FENCE_GATES.description": "<yellow>",
+
+  "text.itsours.gui.flags.simple.interact_block.TRAPDOORS.name": "<gold>使用地板門",
+  "text.itsours.gui.flags.simple.interact_block.TRAPDOORS.description": "<yellow>",
+
+  "text.itsours.gui.flags.simple.interact_block.DOORS.name": "<gold>使用門",
+  "text.itsours.gui.flags.simple.interact_block.DOORS.description": "<yellow>",
+
+  "text.itsours.gui.flags.simple.element.lore": "${description}\n狀態: <bold>${value}</bold>",
+
   "text.itsours.gui.trustmanager.add": "<green>授權玩家",
-  "text.itsours.gui.claim.flags.name": "<gray>領地設定",
-  "text.itsours.gui.claim.flags.lore": "變更所有玩家的設定",
-  "text.itsours.gui.claim.rename.name": "<yellow>重新命名",
-  "text.itsours.gui.claim.rename.lore": "改變領地名稱",
+  "text.itsours.gui.claim.flags.name": "<gold>領地設定",
+  "text.itsours.gui.claim.flags.lore": "<yellow>變更所有玩家的設定",
+  "text.itsours.gui.claim.rename.name": "<gold>重新命名",
+  "text.itsours.gui.claim.rename.lore": "<yellow>改變領地名稱",
   "text.itsours.gui.claim.rename.confirm": "您確定您要將 ${claim_name} 命名成 ${input}?",
-  "text.itsours.gui.claim.remove.name": "<dark_red>刪除領地",
+  "text.itsours.gui.claim.remove.name": "<gold>刪除領地",
   "text.itsours.gui.claim.remove.lore": "<dark_red><bold>警告</bold>: 刪除領地無法復原!",
   "text.itsours.gui.claim.remove.confirm": "您確定您要永久刪除 ${claim_full_name}?",
-  "text.itsours.gui.claim.trustmanager.name": "編輯已授權對象",
-  "text.itsours.gui.claim.trustmanager.lore": "授權/取消授權 玩家",
-  "text.itsours.gui.claim.groupmanager.name": "<aqua>身份組管理",
-  "text.itsours.gui.claim.groupmanager.lore": "新增/刪除/調整 領地身份組",
-  "text.itsours.gui.claim.playermanager.name": "<gold>玩家管理",
-  "text.itsours.gui.claim.playermanager.lore": "為特定玩家設定權限",
+  "text.itsours.gui.claim.groupmanager.name": "<gold>管理身份組",
+  "text.itsours.gui.claim.groupmanager.lore": "<yellow>新增、移除、調整領地身份組",
+  "text.itsours.gui.claim.playermanager.advanced.name": "<gold>管理玩家",
+  "text.itsours.gui.claim.playermanager.advanced.lore": "<yellow>為特定玩家調整權限",
+
+  "text.itsours.gui.claim.playermanager.simple.name": "<gold>管理玩家",
+  "text.itsours.gui.claim.playermanager.simple.lore": "<yellow>授權玩家",
+
   "text.itsours.gui.node.group.description": "包含 ${count} 項設定",
   "text.itsours.info.notProtected": "<hover:'<aqua>點擊!</aqua>'><run_cmd:'/claim create'><yellow>這個方塊還沒有受到領地保護，點擊我建立領地!</yellow></run_cmd></hover>",
   "text.itsours.select.pos1": "<green>位置 #1 已設定在 ${pos_x} ${pos_z}",
@@ -158,33 +291,32 @@
   "text.itsours.value.default": "<gray>未設定",
   "text.itsours.claim.enter": "<green>歡迎來到 ${claim_full_name}",
   "text.itsours.claim.leave": "<red>已離開 ${claim_full_name}",
-  "text.itsours.flags.place.description": "放置方塊 (ex.放置石頭)",
-  "text.itsours.flags.mine.description": "挖掘方塊 (ex.挖掘泥土)",
-  "text.itsours.flags.interact_block.description": "右鍵互動方塊 (ex.打開箱子)",
-  "text.itsours.flags.use_on_block.description": "右鍵對方塊使用物品 (ex.用鋤頭耕地)",
-  "text.itsours.flags.use_item.description": "右鍵使用物品 (ex.吃東西)",
-  "text.itsours.flags.damage_entity.description": "傷害實體 (ex. 打死豬豬)",
-  "text.itsours.flags.interact_entity.description": "右鍵互動實體 (ex. 與村民交易)",
+  "text.itsours.flags.place.description": "放置方塊",
+  "text.itsours.flags.mine.description": "挖掘方塊",
+  "text.itsours.flags.interact_block.description": "右鍵與方塊互動",
+  "text.itsours.flags.use_on_block.description": "右鍵對方塊使用物品",
+  "text.itsours.flags.use_item.description": "右鍵使用物品",
+  "text.itsours.flags.damage_entity.description": "傷害實體",
+  "text.itsours.flags.interact_entity.description": "右鍵與實體互動",
   "text.itsours.flags.item_pick.description": "撿起物品",
   "text.itsours.flags.xp_absorb.description": "吸收經驗",
-  "text.itsours.flags.glide.description": "領地飛行、鞘翅飛行",
-  "text.itsours.flags.modify.description": "領地調整權限 (eg. 擴展領地)",
+  "text.itsours.flags.glide.description": "鞘翅及領地飛行",
+  "text.itsours.flags.modify.description": "領地調整權限",
   "text.itsours.flags.modify.size.description": "擴展 & 縮減領地",
   "text.itsours.flags.modify.permission.description": "變更設定、權限、身份組",
   "text.itsours.flags.modify.message.description": "變更「進出」領地的提示訊息",
   "text.itsours.flags.modify.subzone.description": "建立子領地",
-  "text.itsours.flags.modify.check.description": "使用 /claim",
-  "text.itsours.flags.pvp.description": "玩家互毆",
-  "text.itsours.flags.explosions.description": "爆炸 (ex. 苦力怕自爆)",
-  "text.itsours.flags.fluid_crosses_borders.description": "流體通過領地邊界 (ex. 流水)",
-  "text.itsours.flags.piston_crosses_borders.description": "活塞穿越領地邊界",
-  "text.itsours.flags.setting.sculk_crosses_borders.description": "茯苓蔓延出領地",
-  "text.itsours.flags.setting.mob_spawn.description": "生怪 (ex. 生殭屍)",
+  "text.itsours.flags.modify.check.description": "使用 /claim check",
+  "text.itsours.flags.pvp.description": "玩家互相傷害",
+  "text.itsours.flags.explosions.description": "爆炸破壞地形",
+  "text.itsours.flags.fluid_crosses_borders.description": "液體流動出邊界",
+  "text.itsours.flags.piston_crosses_borders.description": "活塞伸縮出邊界",
+  "text.itsours.flags.setting.sculk_crosses_borders.description": "伏聆蔓延出邊界",
+  "text.itsours.flags.setting.mob_spawn.description": "生怪",
   "text.itsours.flag.context.default": "<hover:'<italic>預設玩家權限'>預設</hover>",
   "text.itsours.flag.context.global": "<hover:'<italic><bold>全體</bold>玩家設定'>全體</hover>",
   "text.itsours.flag.context.group": "<hover:'<italic>建立身份組，同時調整一群人的設定'>身份組 <italic>(${group_id})</italic></hover>",
   "text.itsours.flag.context.player": "<hover:'<italic>針對特定玩家的設定(會覆寫全體設定)'>個人</hover>",
   "text.itsours.flag.context.owner": "<hover:'<italic>地主擁有所有權限'>地主</hover>",
-  "text.itsours.flag.context.ignore": "<hover:'<italic>無視 <bold>所有設定</bold> else'>忽視</hover>",
-  "text.itsours.action.disallowed.misc.elytra": "<red>您無法在此使用鞘翅"
+  "text.itsours.flag.context.ignore": "<hover:'<italic>無視 <bold>所有設定</bold> else'>忽視</hover>"
 }

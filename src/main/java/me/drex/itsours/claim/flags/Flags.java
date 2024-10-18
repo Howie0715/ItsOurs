@@ -7,7 +7,6 @@ import me.drex.itsours.claim.flags.node.ChildNode;
 import me.drex.itsours.claim.flags.node.RootNode;
 import me.drex.itsours.claim.flags.util.FlagBuilderUtil;
 import me.drex.itsours.claim.flags.util.Modify;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Items;

@@ -38,6 +38,9 @@ public class SimpleFlagsGui extends PageGui<Flag> {
         Flag.flag(Flags.PISTON_CROSSES_BORDERS),
         Flag.flag(Flags.FLUID_CROSSES_BORDERS),
         Flag.flag(Flags.SCULK_CROSSES_BORDERS),
+        Flag.flag(Flags.MOB_SPAWN),
+        Flag.flag(Flags.ITEM_PICK),
+        Flag.flag(Flags.XP_ABSORB),
 
         Flag.flag(Flags.USE_ITEM, Node.item(Items.BOW)),
         Flag.flag(Flags.USE_ITEM, Node.item(Items.CROSSBOW)),
@@ -94,8 +97,14 @@ public class SimpleFlagsGui extends PageGui<Flag> {
 
         Value value = claim.getFlags().get(flag);
         if (value == Value.DEFAULT) {
-            // Deny is simpler to understand for the average user
-            value = Value.DENY;
+            if (flag.toString().equals("item_pick")
+                || flag.toString().equals("xp_absorb")
+                || flag.toString().equals("glide")) {
+                value = Value.ALLOW;
+            } else {
+                // Deny is simpler to understand for the average user
+                value = Value.DENY;
+            }
         }
         boolean allowed = value.value;
 
@@ -111,7 +120,7 @@ public class SimpleFlagsGui extends PageGui<Flag> {
             .hideDefaultTooltip()
             .glow(allowed)
             .setCallback(() -> {
-                Value newValue = allowed ? Value.DEFAULT : Value.ALLOW;
+                Value newValue = allowed ? Value.DENY : Value.ALLOW;
                 claim.getFlags().set(flag, newValue);
                 click();
                 build();

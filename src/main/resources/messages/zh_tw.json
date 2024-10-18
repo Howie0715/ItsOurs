@@ -167,6 +167,15 @@
   "text.itsours.gui.flags.simple.sculk_crosses_borders.name": "<gold>伏聆越界",
   "text.itsours.gui.flags.simple.sculk_crosses_borders.description": "<yellow>伏聆蔓延出邊界",
 
+  "text.itsours.gui.flags.simple.mob_spawn.name": "<gold>生怪",
+  "text.itsours.gui.flags.simple.mob_spawn.description": "<yellow>隨機生成怪物及地獄門豬人",
+
+  "text.itsours.gui.flags.simple.item_pick.name": "<gold>撿起物品",
+  "text.itsours.gui.flags.simple.item_pick.description": "<yellow>",
+
+  "text.itsours.gui.flags.simple.xp_absorb.name": "<gold>吸收經驗",
+  "text.itsours.gui.flags.simple.xp_absorb.description": "<yellow>",
+
   "text.itsours.gui.flags.simple.use_item.bow.name": "<gold>使用弓",
   "text.itsours.gui.flags.simple.use_item.bow.description": "<yellow>",
 
@@ -311,8 +320,8 @@
   "text.itsours.flags.explosions.description": "爆炸破壞地形",
   "text.itsours.flags.fluid_crosses_borders.description": "液體流動出邊界",
   "text.itsours.flags.piston_crosses_borders.description": "活塞伸縮出邊界",
-  "text.itsours.flags.setting.sculk_crosses_borders.description": "伏聆蔓延出邊界",
-  "text.itsours.flags.setting.mob_spawn.description": "生怪",
+  "text.itsours.flags.sculk_crosses_borders.description": "伏聆蔓延出邊界",
+  "text.itsours.flags.mob_spawn.description": "生怪",
   "text.itsours.flag.context.default": "<hover:'<italic>預設玩家權限'>預設</hover>",
   "text.itsours.flag.context.global": "<hover:'<italic><bold>全體</bold>玩家設定'>全體</hover>",
   "text.itsours.flag.context.group": "<hover:'<italic>建立身份組，同時調整一群人的設定'>身份組 <italic>(${group_id})</italic></hover>",

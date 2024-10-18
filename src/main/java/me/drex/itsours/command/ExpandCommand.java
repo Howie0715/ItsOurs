@@ -46,7 +46,7 @@ public class ExpandCommand extends AbstractCommand {
     }
 
     private int execute(ServerCommandSource src, AbstractClaim claim, int distance) throws CommandSyntaxException {
-        validateAction(src, claim, Flags.MODIFY, Modify.SIZE.node());
+//        validateAction(src, claim, Flags.MODIFY, Modify.SIZE.node());
         ServerPlayerEntity player = src.getPlayerOrThrow();
         ServerWorld world = player.getServerWorld();
         UUID uuid = player.getUuid();

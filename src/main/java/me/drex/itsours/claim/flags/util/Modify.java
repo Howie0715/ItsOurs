@@ -7,7 +7,7 @@ import net.minecraft.item.Items;
 
 public enum Modify {
 
-    SIZE("size", Items.PISTON),
+//    SIZE("size", Items.PISTON),
     FLAG("flag", Items.REPEATER),
     MESSAGE("message", Items.PAPER),
     SUBZONE("subzone", Items.SPRUCE_DOOR),

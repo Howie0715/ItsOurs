@@ -1,7 +1,7 @@
 package me.drex.itsours.mixin;
 
 import me.drex.itsours.claim.list.ClaimList;
-import me.drex.itsours.claim.flags.FlagsManager;
+import me.drex.itsours.claim.flags.Flags;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -26,7 +26,7 @@ public abstract class RaidMixin extends PersistentState {
         for (Entity entity : player.getServerWorld().getOtherEntities(player, new Box(
                 x - distance, y - distance, z - distance, x + distance, y + distance, z + distance
         ))) {
-            if (entity instanceof VillagerEntity && ClaimList.getClaimAt(entity).isPresent() &&  !ClaimList.getClaimAt(entity).get().checkAction(null, FlagsManager.MOB_SPAWN)) {
+            if (entity instanceof VillagerEntity && ClaimList.getClaimAt(entity).isPresent() &&  !ClaimList.getClaimAt(entity).get().checkAction(null, Flags.MOB_SPAWN)) {
                 cir.setReturnValue(null);
                 cir.cancel();
                 break;

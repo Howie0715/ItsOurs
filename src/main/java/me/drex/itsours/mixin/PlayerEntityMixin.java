@@ -36,6 +36,8 @@ public abstract class PlayerEntityMixin extends LivingEntity {
     @Shadow
     public abstract void sendMessage(Text message, boolean actionBar);
 
+    @Shadow public abstract boolean hasPermissionLevel(int level);
+
     @ModifyExpressionValue(
         method = "attack",
         at = @At(

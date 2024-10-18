@@ -3,7 +3,7 @@ package me.drex.itsours.command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.drex.itsours.ItsOurs;
-import me.drex.itsours.claim.flags.FlagsManager;
+import me.drex.itsours.claim.flags.Flags;
 import me.drex.itsours.claim.list.ClaimList;
 import me.drex.itsours.user.PlayerData;
 import net.minecraft.network.packet.s2c.play.PlayerAbilitiesS2CPacket;
@@ -28,7 +28,7 @@ public class FlyCommand extends ToggleCommand {
     protected void afterToggle(ServerCommandSource src, boolean newValue) throws CommandSyntaxException {
         ServerPlayerEntity player = src.getPlayer();
         if (ClaimList.getClaimAt(player).isPresent()
-            && ClaimList.getClaimAt(player).get().checkAction(null, FlagsManager.GLIDE)
+            && ClaimList.getClaimAt(player).get().checkAction(null, Flags.GLIDE)
             && (player.getWorld().getRegistryKey().equals(World.OVERWORLD)
             || player.getWorld().getRegistryKey().equals(World.END)
             || player.getWorld().getRegistryKey().equals(World.NETHER))) {

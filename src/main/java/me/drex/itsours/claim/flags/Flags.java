@@ -60,6 +60,14 @@ public class Flags {
         .icon(Items.DIAMOND_SWORD)
         .then(FlagBuilderUtil.getNodes(Registries.ENTITY_TYPE, entityType -> !entityType.equals(EntityType.PLAYER)))
         .build();
+    public static final AbstractChildNode ITEM_PICK = literal("item_pick")
+        .description("item_pick")
+        .icon(Items.APPLE)
+        .build();
+    public static final AbstractChildNode XP_ABSORB = literal("xp_absorb")
+        .description("xp_absorb")
+        .icon(Items.EXPERIENCE_BOTTLE)
+        .build();
     public static final AbstractChildNode GLIDE = literal("glide")
         .description("glide")
         .icon(Items.ELYTRA)
@@ -113,6 +121,8 @@ public class Flags {
         registerPlayerFlag(USE_ITEM);
         registerPlayerFlag(DAMAGE_ENTITY);
         registerPlayerFlag(INTERACT_ENTITY);
+        registerPlayerFlag(ITEM_PICK);
+        registerPlayerFlag(XP_ABSORB);
         registerPlayerFlag(MODIFY);
         registerPlayerFlag(GLIDE);
         // Global flags

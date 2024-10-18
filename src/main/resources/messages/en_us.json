@@ -298,6 +298,8 @@
   "text.itsours.flags.use_item.description": "Right click items (eg. eating)",
   "text.itsours.flags.damage_entity.description": "Hurting entities (eg. hitting a pig)",
   "text.itsours.flags.interact_entity.description": "Right clicking entities (eg. trading with villager)",
+  "text.itsours.flags.item_pick.description": "Pick up item.",
+  "text.itsours.flags.xp_absorb.description": "Absorb exp orb.",
   "text.itsours.flags.glide.description": "Elytra gliding",
   "text.itsours.flags.modify.description": "Claim flags (eg. expanding claim)",
   "text.itsours.flags.modify.size.description": "Expand & shrink the claim",

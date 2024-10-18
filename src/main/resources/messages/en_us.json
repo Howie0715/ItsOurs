@@ -176,8 +176,8 @@
   "text.itsours.gui.flags.simple.use_item.ender_pearl.name": "<gold>Use ender pearl",
   "text.itsours.gui.flags.simple.use_item.ender_pearl.description": "<yellow>Throw ender pearls",
 
-  "text.itsours.gui.flags.simple.interact_entity.boat.name": "<gold>Interact boat",
-  "text.itsours.gui.flags.simple.interact_entity.boat.description": "<yellow>Enter and drive boats",
+  "text.itsours.gui.flags.simple.interact_entity.BOAT.name": "<gold>Interact boat",
+  "text.itsours.gui.flags.simple.interact_entity.BOAT.description": "<yellow>Enter and drive boats",
 
   "text.itsours.gui.flags.simple.interact_entity.minecart.name": "<gold>Interact minecart",
   "text.itsours.gui.flags.simple.interact_entity.minecart.description": "<yellow>Enter and drive minecarts",

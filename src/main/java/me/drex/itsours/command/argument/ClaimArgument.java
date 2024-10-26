@@ -9,6 +9,7 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import me.drex.itsours.claim.AbstractClaim;
 import me.drex.itsours.claim.Claim;
+import me.drex.itsours.claim.flags.Flags;
 import me.drex.itsours.claim.list.ClaimList;
 import me.drex.itsours.claim.Subzone;
 import net.minecraft.command.CommandSource;
@@ -48,6 +49,22 @@ public class ClaimArgument {
         }
         return CommandSource.suggestMatching(result, builder);
     };
+    public static final SuggestionProvider<ServerCommandSource> MANAGE_CLAIMS_PROVIDER = (source, builder) -> {
+        final List<String> result = new ArrayList<>();
+        ServerPlayerEntity player = source.getSource().getPlayer();
+        ClaimList.getClaimAt(player)
+                .ifPresent(claim -> result.add(claim.getFullName()));
+        UUID uuid = player.getUuid();
+        if (uuid != null) {
+            for (AbstractClaim claim : ClaimList.getClaims()) {
+                if (claim.checkAction(uuid, Flags.MODIFY)) {
+                    result.add(claim.getFullName());
+                    addSubzones(claim, builder.getRemaining(), result);
+                }
+            }
+        }
+        return CommandSource.suggestMatching(result, builder);
+    };
     private static final String DEFAULT_NAME = "claim";
 
     public static RequiredArgumentBuilder<ServerCommandSource, String> ownClaims() {
@@ -58,12 +75,20 @@ public class ClaimArgument {
         return allClaims(DEFAULT_NAME);
     }
 
+    public static RequiredArgumentBuilder<ServerCommandSource, String> manageClaims() {
+        return manageClaims(DEFAULT_NAME);
+    }
+
     public static RequiredArgumentBuilder<ServerCommandSource, String> allClaims(String name) {
         return argument(name, StringArgumentType.word()).suggests(ALL_CLAIMS_PROVIDER);
     }
 
     public static RequiredArgumentBuilder<ServerCommandSource, String> ownClaims(String name) {
         return argument(name, StringArgumentType.word()).suggests(OWN_CLAIMS_PROVIDER);
+    }
+
+    public static RequiredArgumentBuilder<ServerCommandSource, String> manageClaims(String name) {
+        return argument(name, StringArgumentType.word()).suggests(MANAGE_CLAIMS_PROVIDER);
     }
 
     public static AbstractClaim getClaim(CommandContext<ServerCommandSource> ctx) throws CommandSyntaxException {

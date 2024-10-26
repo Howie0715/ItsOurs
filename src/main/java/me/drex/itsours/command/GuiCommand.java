@@ -40,7 +40,7 @@ public class GuiCommand extends AbstractCommand {
                         .requires(src -> ItsOurs.checkPermission(src, "itsours.gui.others", 2))
                 )
             ).then(
-                ClaimArgument.ownClaims()
+                ClaimArgument.manageClaims()
                     .executes(ctx -> {
                         AbstractClaim claim = ClaimArgument.getClaim(ctx);
                         validateAction(ctx.getSource(), claim, Flags.MODIFY);

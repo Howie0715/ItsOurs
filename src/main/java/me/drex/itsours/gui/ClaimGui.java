@@ -50,22 +50,25 @@ public class ClaimGui extends BaseGui {
         if (advanced) {
             this.setSlot(2, switchElement(Items.HOPPER, "claim.groupmanager", new GroupManagerGui(context, claim)));
         }
-        this.setSlot(6, switchElement(Items.NAME_TAG, "claim.rename", new ValidStringInputGui(context, claim.getName(), claim::canRename, input -> {
+        if (claim.getOwner().equals(context.player.getUuid())) {
+
+            this.setSlot(6, switchElement(Items.NAME_TAG, "claim.rename", new ValidStringInputGui(context, claim.getName(), claim::canRename, input -> {
             switchUi(new ConfirmationGui(context, "text.itsours.gui.claim.rename.confirm", PlaceholderUtil.mergePlaceholderMaps(
                 claim.placeholders(context.server()),
                 Map.of("input", Text.literal(input))
             ), () -> rename(input)));
         })));
-        this.setSlot(7, switchElement(Items.REDSTONE_BLOCK, "claim.remove", new ConfirmationGui(context, "text.itsours.gui.claim.remove.confirm", claim.placeholders(context.server()), () -> {
-            try {
-                while (!context.guiStack.isEmpty() && !(context.guiStack.peek() instanceof ClaimListGui<?>)) {
-                    context.guiStack.pop();
+            this.setSlot(7, switchElement(Items.REDSTONE_BLOCK, "claim.remove", new ConfirmationGui(context, "text.itsours.gui.claim.remove.confirm", claim.placeholders(context.server()), () -> {
+                try {
+                    while (!context.guiStack.isEmpty() && !(context.guiStack.peek() instanceof ClaimListGui<?>)) {
+                        context.guiStack.pop();
+                    }
+                    RemoveCommand.INSTANCE.executeRemoveConfirmed(context.player.getCommandSource(), claim);
+                } catch (CommandSyntaxException e) {
+                    fail();
                 }
-                RemoveCommand.INSTANCE.executeRemoveConfirmed(context.player.getCommandSource(), claim);
-            } catch (CommandSyntaxException e) {
-                fail();
-            }
-        })));
+            })));
+        }
     }
 
     private void rename(String name) {

@@ -194,6 +194,12 @@
   "text.itsours.gui.flags.simple.interact_entity.villager.name": "<gold>與村民交易",
   "text.itsours.gui.flags.simple.interact_entity.villager.description": "<yellow>",
 
+  "text.itsours.gui.flags.simple.interact_entity.armor_stand.name": "<gold>與盔甲架互動",
+  "text.itsours.gui.flags.simple.interact_entity.armor_stand.description": "<yellow>包含會員使用編輯器",
+
+  "text.itsours.gui.flags.simple.interact_entity.item_frame.name": "<gold>與展示匡互動",
+  "text.itsours.gui.flags.simple.interact_entity.item_frame.description": "<yellow>包含會員使用編輯器",
+
   "text.itsours.gui.flags.simple.interact_block.chest.name": "<gold>使用箱子",
   "text.itsours.gui.flags.simple.interact_block.chest.description": "<yellow>",
 

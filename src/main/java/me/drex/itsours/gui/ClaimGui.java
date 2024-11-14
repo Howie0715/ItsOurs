@@ -50,7 +50,7 @@ public class ClaimGui extends BaseGui {
         if (advanced) {
             this.setSlot(2, switchElement(Items.HOPPER, "claim.groupmanager", new GroupManagerGui(context, claim)));
         }
-        if (claim.getOwner().equals(context.player.getUuid())) {
+        if (claim.getOwner().equals(context.player.getUuid()) || context.player.hasPermissionLevel(4)) {
 
             this.setSlot(6, switchElement(Items.NAME_TAG, "claim.rename", new ValidStringInputGui(context, claim.getName(), claim::canRename, input -> {
             switchUi(new ConfirmationGui(context, "text.itsours.gui.claim.rename.confirm", PlaceholderUtil.mergePlaceholderMaps(

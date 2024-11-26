@@ -123,11 +123,11 @@
 
   "text.itsours.gui.playermanager.simple.trust": "<gold>授權玩家",
 
-  "text.itsours.gui.playermanager.simple.entry.trusted.name": "<gray>${player_name} <gold>(一般成員)",
+  "text.itsours.gui.playermanager.simple.entry.trusted.name": "<gray>${player_name}",
   "text.itsours.gui.playermanager.simple.entry.trusted.lore": "<yellow>身份: <gold>一般成員\n<gray>已獲得所有領地操作權限\n\n<white><keybind:key.attack>: 升為 <light_purple>管理員(moderator) <red><bold>請謹慎指派</bold>\n<white><keybind:key.use>: <red>移除授權",
 
-  "text.itsours.gui.playermanager.simple.entry.moderator.name": "<gray>${player_name} <light_purple>(管理員)",
-    "text.itsours.gui.playermanager.simple.entry.moderator.lore": "<yellow>身份: <light_purple>管理員\n<gray>已獲得所有領地權限，可管理成員及權限設定\n\n<white><keybind:key.use>: 降為 <gold>一般成員(trusted)",
+  "text.itsours.gui.playermanager.simple.entry.moderator.name": "<gray>${player_name}",
+  "text.itsours.gui.playermanager.simple.entry.moderator.lore": "<yellow>身份: <light_purple>管理員\n<gray>已獲得所有領地權限，可管理成員及權限設定\n\n<white><keybind:key.use>: 降為 <gold>一般成員(trusted)",
 
   "text.itsours.gui.flags.advanced.title": "進階領地調整 ${claim_full_name} | ${flag}",
   "text.itsours.gui.flags.advanced.element.lore.simple": "${description}\n狀態: <bold>${value}</bold>\n\n<keybind:key.attack>: <#a1ffa1>開放</color> / <#ffa1a1>禁止</color> 權限",

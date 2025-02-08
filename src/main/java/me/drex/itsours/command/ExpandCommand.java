@@ -84,7 +84,7 @@ public class ExpandCommand extends AbstractCommand {
                 return 0;
             }
         }
-        if (newBox.getMinY() < world.getBottomY() || newBox.getMaxY() > world.getTopYInclusive()) {
+        if (newBox.getMinY() != originalBox.getMinY() || newBox.getMaxY() != originalBox.getMaxY()) {
             src.sendError(localized("text.itsours.commands.expand.outOfWorld"));
             return 0;
         }
